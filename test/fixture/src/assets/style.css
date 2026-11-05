@@ -1,0 +1,4 @@
+@import "/assets/extra.css";
+body { margin: 0; font-family: sans-serif; }
+.site-header { padding: 12px; background: url(/assets/bg.png); }
+.hero { min-height: 40px; }

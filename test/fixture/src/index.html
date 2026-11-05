@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>데모 스튜디오 | 테스트용 홈</title>
+  <meta name="description" content="빌드 도구 테스트를 위한 가상의 스튜디오 홈 페이지입니다. 실제 업체가 아닙니다.">
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>.hero { background-image: url("/assets/bg.png"); }</style>
+</head>
+<body>
+  <!-- @include _partials/header.html -->
+  <main>
+    <h1>데모 스튜디오</h1>
+    <section class="hero" style="background: url('/assets/bg.png') no-repeat">
+      <img src="/assets/bg.png" srcset="/assets/bg.png 1x, /assets/bg.png 2x" alt="배경" width="1" height="1">
+    </section>
+    <p>
+      <a href="/about/">소개</a> ·
+      <a href="/menu">메뉴</a> ·
+      <a href="#contact">연락처</a> ·
+      <a href="/demo/about/">이미 하위 경로가 붙은 링크</a> ·
+      <a href="https://external.example.org/">외부 링크</a> ·
+      <a href="tel:+8220000000">전화</a>
+    </p>
+    <section id="contact">
+      <h2>연락처</h2>
+      <p>테스트용 내용</p>
+    </section>
+  </main>
+  <script>
+    const template = '<a href="/x">자바스크립트 문자열은 그대로</a>';
+  </script>
+</body>
+</html>
