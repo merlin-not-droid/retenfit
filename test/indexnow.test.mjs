@@ -3,8 +3,8 @@ import http from 'node:http';
 import { test } from 'node:test';
 import { build } from '../scripts/build.mjs';
 import { plan, submit } from '../scripts/indexnow.mjs';
-import { diffSitemaps, renderSitemap } from '../scripts/lib/sitemap.mjs';
-import { FIXTURE, PROJECT_URL, tempDir } from './helpers.mjs';
+import { diffSitemaps, parseSitemap, renderSitemap } from '../scripts/lib/sitemap.mjs';
+import { FIXTURE, PROJECT_URL, read, tempDir } from './helpers.mjs';
 
 const sitemap = (entries) => renderSitemap(entries.map(([loc, lastmod]) => ({ loc, lastmod })));
 
@@ -24,10 +24,19 @@ test('plan: 첫 배포면 전체, 이후엔 바뀐 것만', async (t) => {
   assert.equal(first.urls.length, 3);
   assert.match(first.note, /첫 배포/);
 
-  const live = sitemap([[PROJECT_URL, ''], [`${PROJECT_URL}about/`, ''], [`${PROJECT_URL}old.html`, '']]);
+  // 지금 배포된 sitemap 흉내: 홈·소개는 이번 빌드와 같은 lastmod(안 바뀜), menu.html은 없고(새로 생김), old.html은 사라짐.
+  // lastmod는 git 커밋 시각이라 환경마다 다르므로(커밋 전 로컬 vs CI) 이번 빌드 값을 그대로 가져다 씀
+  const built = parseSitemap(read(outDir, 'sitemap.xml'));
+  const same = (url) => [url, built.get(url)];
+  const live = sitemap([same(PROJECT_URL), same(`${PROJECT_URL}about/`), [`${PROJECT_URL}old.html`, '']]);
   const next = await plan({ outDir, fetchImpl: async () => new Response(live, { status: 200 }) });
   assert.deepEqual(next.changed, [`${PROJECT_URL}menu.html`]);
   assert.deepEqual(next.removed, [`${PROJECT_URL}old.html`]);
+
+  // 이전 배포에 lastmod가 다르게(또는 없이) 기록된 페이지는 다시 알림
+  const stale = sitemap([[PROJECT_URL, '2000-01-01T00:00:00Z'], same(`${PROJECT_URL}about/`), same(`${PROJECT_URL}menu.html`)]);
+  const again = await plan({ outDir, fetchImpl: async () => new Response(stale, { status: 200 }) });
+  assert.deepEqual(again.changed, built.get(PROJECT_URL) ? [PROJECT_URL] : []);
 });
 
 function startMockServer(t, { serveKey = true } = {}) {
