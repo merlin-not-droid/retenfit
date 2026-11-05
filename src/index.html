@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAXFIT 왁스핏 | 왁싱샵 첫 방문 유인·재방문 설계·성과 분석</title>
+  <meta name="description" content="왁싱샵 사장님을 위한 프로모션 설계 도구. 첫 방문 할인율을 정하면 남는 이익과 재방문으로 회수되는 정도를 바로 보여 주고, 성별·시술별 방문 주기와 재방문율 분석까지 한곳에서 관리합니다.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/assets/tokens.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "WAXFIT",
+    "alternateName": "왁스핏",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "ko",
+    "description": "왁싱샵의 첫 방문 유인과 재방문 설계, 프로모션 성과 분석을 돕는 웹 서비스"
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="WAXFIT 홈">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#1e2a47"/><path d="M11 15l5.2 18L21 20.5 25.8 33 31 15" fill="none" stroke="#e3cbb8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36.5" cy="31.5" r="3" fill="#e3cbb8"/></svg>
+        <span>WAXFIT <small>왁스핏</small></span>
+      </a>
+      <nav class="site-nav" aria-label="주요 메뉴">
+        <a href="#features">기능</a>
+        <a href="#analytics">성과 분석</a>
+        <a href="#pricing">요금</a>
+        <a href="#faq">자주 묻는 질문</a>
+      </nav>
+      <a class="btn btn-primary" href="/app/">데모 체험</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">왁싱샵 사장님을 위한 프로모션 설계 도구</p>
+          <h1>첫 방문 할인으로<br>끝내지 말고,<br><em>단골로 이어지게.</em></h1>
+          <p class="lead">WAXFIT(왁스핏)은 <strong>첫 방문 유인</strong>과 <strong>재방문 설계</strong> 두 가지에만 집중합니다. 할인율을 정하는 순간 남는 이익과 재방문으로 회수되는 정도를 보여 주고, 실제 방문 기록으로 효과를 확인합니다.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="/app/">가입 없이 데모 체험하기</a>
+            <a class="btn btn-line" href="#features">어떤 기능이 있나요?</a>
+          </div>
+        </div>
+
+        <aside class="spectrum-card" aria-label="할인 스펙트럼 화면 예시">
+          <div class="card-head">
+            <h2>첫 방문 할인 · 브라질리언(여성)</h2>
+            <span class="tag">예시 화면</span>
+          </div>
+          <p class="sub">정가 70,000원 · 1회 변동비 20,000원 · 최소 이익 10,000원 기준</p>
+          <div class="track" role="img" aria-label="할인율 20%: 안전 구간">
+            <span class="pin">20%</span>
+            <span class="thumb"></span>
+          </div>
+          <div class="track-scale" aria-hidden="true"><span>0%</span><span>35%</span><span>70%</span></div>
+          <ul class="legend">
+            <li class="ok">재방문으로 회수</li>
+            <li class="warn">회수 부족</li>
+            <li class="bad">최소 이익 미달</li>
+          </ul>
+          <dl class="figures">
+            <div><dt>첫 결제액</dt><dd>56,000원</dd></div>
+            <div><dt>첫 방문 공헌이익</dt><dd>36,000원</dd></div>
+            <div><dt>할인액</dt><dd>14,000원</dd></div>
+            <div><dt>회수에 필요한 재방문율</dt><dd>28%</dd></div>
+          </dl>
+          <p class="note-ok">재방문율 40%를 가정하면 할인액은 재방문 이익으로 모두 회수됩니다.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="why-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">WHY WAXFIT</p>
+          <h2 id="why-title">할인으로 모은 첫 손님, 다시 오고 있나요?</h2>
+          <p>첫 방문 할인으로 손님을 모으고 실력을 보여 주는 매장은 많지만, 그다음 방문까지 설계하는 곳은 드뭅니다.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>할인율을 감으로 정합니다</h3>
+            <p>20%가 적당한지 30%가 괜찮은지, 할인 후 한 번 시술에 얼마가 남는지 바로 계산하기 어렵습니다.</p>
+          </article>
+          <article class="card">
+            <h3>재방문 시점을 놓칩니다</h3>
+            <p>왁싱은 부위와 성별에 따라 다시 와야 할 때가 다릅니다. 미용실 주기로 관리하면 안내 시점이 어긋납니다.</p>
+          </article>
+          <article class="card">
+            <h3>효과를 확인할 기준이 없습니다</h3>
+            <p>어떤 프로모션으로 온 손님이 더 많이 다시 왔는지, 할인한 만큼 이익이 돌아왔는지 비교하기 어렵습니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">FEATURES</p>
+          <h2 id="features-title">꼭 필요한 네 가지만 담았습니다</h2>
+          <p>예약·재고·회계처럼 다른 도구가 이미 하는 일은 뺐습니다. 첫 방문 유인과 재방문 설계, 그리고 그 효과를 확인하는 데 집중합니다.</p>
+        </div>
+        <div class="grid-2">
+          <article class="card feature-card">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div>
+            <span class="tag">첫 방문 유인</span>
+            <h3>프로모션을 고르고, 할인율은 스펙트럼으로 직접</h3>
+            <p>첫 방문 프로모션 목록에서 고르면 매장 숫자로 계산한 추천 할인율이 표시됩니다. 추천값은 출발점일 뿐, 슬라이더로 직접 조절할 수 있습니다.</p>
+            <ul>
+              <li>할인 후 결제액·1회 공헌이익을 바로 계산</li>
+              <li>매장이 정한 최소 이익보다 낮아지면 경고</li>
+              <li>할인액을 메우려면 재방문율이 얼마나 필요한지 표시</li>
+            </ul>
+          </article>
+          <article class="card feature-card">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/><path d="M12 7v5l3 2"/></svg></div>
+            <span class="tag">재방문 설계</span>
+            <h3>성별·시술 부위별 방문 주기로 다음 방문을 계산</h3>
+            <p>시술마다 기본 주기를 정하고, 손님마다 개인 주기를 따로 둘 수 있습니다. 다가오는 방문·지난 방문·오래 안 온 손님을 나눠 보여 줍니다.</p>
+            <ul>
+              <li>2회차 할인, 회수권, 스탬프, 휴면 고객 복귀 쿠폰</li>
+              <li>마케팅 수신에 동의한 손님에게만 보낼 안내 문구 준비</li>
+              <li>(광고) 표시·수신 거부 안내를 문구에 자동 포함</li>
+            </ul>
+          </article>
+          <article class="card feature-card">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+            <span class="tag">성과 분석</span>
+            <h3>프로모션별 재방문율과 남은 이익을 비교</h3>
+            <p>방문 기록을 바탕으로 프로모션마다 재방문율과 손님 1명당 공헌이익을 계산합니다. 성별로 나눠 볼 수 있습니다.</p>
+            <ul>
+              <li>아직 관찰 기간이 안 끝난 손님은 따로 표시</li>
+              <li>표본이 적으면 해석 주의 표시와 신뢰 구간 제공</li>
+              <li>CSV로 가져오기 — 중복·날짜 오류·빈 칸을 미리 검사</li>
+            </ul>
+          </article>
+          <article class="card feature-card">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>
+            <span class="tag">고객 데이터</span>
+            <h3>손님별 방문·결제 기록을 한곳에</h3>
+            <p>별칭·성별·시술·방문일·결제액·수신 동의를 기록하면 다음 방문 예정일과 누적 결제액이 자동으로 계산됩니다.</p>
+            <ul>
+              <li>검색·성별·방문 상태로 걸러 보기</li>
+              <li>엑셀에서 열리는 CSV 양식 내려받기·올리기</li>
+              <li>데이터 전체 백업과 복원</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">HOW IT WORKS</p>
+          <h2 id="how-title">세 단계면 충분합니다</h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>매장 숫자 입력</h3>
+            <p>시술별 정가, 1회 변동비(재료비·인건비), 기본 방문 주기, 최소로 남겨야 할 이익을 넣습니다.</p>
+          </li>
+          <li>
+            <h3>프로모션 고르고 조절</h3>
+            <p>첫 방문·재방문 프로모션을 고르고 할인율을 스펙트럼에서 정합니다. 경고가 뜨면 바로 조정합니다.</p>
+          </li>
+          <li>
+            <h3>방문 기록으로 확인</h3>
+            <p>손님 방문을 기록하거나 CSV로 올리면 프로모션별 재방문율과 이익이 계산됩니다.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="analytics" aria-labelledby="analytics-title">
+      <div class="wrap split">
+        <div>
+          <div class="section-head">
+            <p class="kicker">ANALYTICS</p>
+            <h2 id="analytics-title">“그 프로모션, 효과 있었나요?”에 숫자로 답합니다</h2>
+            <p>재방문율은 관찰 기간(예: 첫 방문 후 60일)이 끝난 손님만으로 계산해, 막 다녀간 손님 때문에 수치가 낮아 보이는 착시를 막습니다.</p>
+          </div>
+          <ul class="checklist">
+            <li>프로모션별 신규 손님 수·재방문율·95% 신뢰 구간</li>
+            <li>관찰 기간 안의 손님 1명당 공헌이익</li>
+            <li>여성·남성 손님 따로 비교</li>
+            <li>월별 신규 손님과 재방문 흐름</li>
+          </ul>
+        </div>
+        <figure class="card chart-card">
+          <figcaption><span>프로모션별 재방문율</span><span class="tag">예시 데이터</span></figcaption>
+          <svg viewBox="0 0 520 250" role="img" aria-label="예시: 프로모션 A 46%, B 38%, C 52%, 프로모션 없음 31%. 가는 선은 95% 신뢰 구간">
+            <g stroke="#e4d8cc" stroke-width="1">
+              <line x1="130" y1="16" x2="130" y2="214"/>
+              <line x1="227" y1="16" x2="227" y2="214" stroke-dasharray="3 4"/>
+              <line x1="324" y1="16" x2="324" y2="214" stroke-dasharray="3 4"/>
+              <line x1="421" y1="16" x2="421" y2="214" stroke-dasharray="3 4"/>
+            </g>
+            <g font-size="13" fill="#6b5e55" text-anchor="middle">
+              <text x="130" y="236">0%</text><text x="227" y="236">20%</text><text x="324" y="236">40%</text><text x="421" y="236">60%</text>
+            </g>
+            <g font-size="14" fill="#2a2420" text-anchor="end">
+              <text x="118" y="48">프로모션 A</text>
+              <text x="118" y="98">프로모션 B</text>
+              <text x="118" y="148">프로모션 C</text>
+              <text x="118" y="198">프로모션 없음</text>
+            </g>
+            <g>
+              <rect x="130" y="30" width="223" height="26" rx="5" fill="#1e2a47"/>
+              <rect x="130" y="80" width="185" height="26" rx="5" fill="#1e2a47"/>
+              <rect x="130" y="130" width="253" height="26" rx="5" fill="#1e2a47"/>
+              <rect x="130" y="180" width="151" height="26" rx="5" fill="#c9a68e"/>
+            </g>
+            <g stroke="#2a2420" stroke-width="2">
+              <line x1="305" y1="43" x2="402" y2="43"/><line x1="305" y1="36" x2="305" y2="50"/><line x1="402" y1="36" x2="402" y2="50"/>
+              <line x1="271" y1="93" x2="363" y2="93"/><line x1="271" y1="86" x2="271" y2="100"/><line x1="363" y1="86" x2="363" y2="100"/>
+              <line x1="329" y1="143" x2="436" y2="143"/><line x1="329" y1="136" x2="329" y2="150"/><line x1="436" y1="136" x2="436" y2="150"/>
+              <line x1="237" y1="193" x2="329" y2="193"/><line x1="237" y1="186" x2="237" y2="200"/><line x1="329" y1="186" x2="329" y2="200"/>
+            </g>
+            <g font-size="14" font-weight="700" fill="#1e2a47">
+              <text x="410" y="48">46%</text><text x="371" y="98">38%</text><text x="444" y="148">52%</text><text x="337" y="198" fill="#6b5e55">31%</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="data-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">DATA &amp; PRIVACY</p>
+          <h2 id="data-title">손님 정보는 꼭 필요한 만큼만</h2>
+          <p>왁싱 시술 기록은 민감하게 느껴질 수 있는 정보입니다. 처음부터 적게 모으고 안전하게 다루도록 설계했습니다.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>이름 대신 별칭으로</h3>
+            <p>손님 구분은 별칭과 고객 번호로 충분합니다. 연락처는 안내를 보낼 때만 선택해서 적습니다.</p>
+          </article>
+          <article class="card">
+            <h3>내 기기에만 저장</h3>
+            <p>데모 버전의 기록은 사용 중인 브라우저에만 저장되고 서버로 보내지 않습니다. 언제든 백업 파일로 내려받을 수 있습니다.</p>
+          </article>
+          <article class="card">
+            <h3>수신 동의한 손님에게만</h3>
+            <p>재방문 안내 같은 광고성 메시지는 미리 동의한 손님에게만 보내야 합니다. 동의하지 않은 손님은 안내 대상에서 자동으로 빠집니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">PRICING</p>
+          <h2 id="pricing-title">매장당 하나의 요금제</h2>
+          <p>고를 것이 많으면 결정이 늦어집니다. 모든 기능을 하나의 요금제에 담을 예정입니다.</p>
+        </div>
+        <div class="price-card">
+          <p class="plan">WAXFIT 매장 요금제</p>
+          <p class="amount">29,000원<span> / 월</span></p>
+          <p class="vat">매장 1곳 기준 · VAT 포함</p>
+          <ul>
+            <li>첫 방문 유인 · 할인 스펙트럼 · 최소 이익 경고</li>
+            <li>재방문 설계 · 방문 주기 · 안내 문구</li>
+            <li>성과 분석 · 고객 데이터 · CSV 가져오기/내보내기</li>
+          </ul>
+          <a class="btn btn-primary" href="/app/">지금 데모로 먼저 써 보기</a>
+          <p class="status">지금은 정식 출시 전입니다. 출시 후에는 카카오·네이버 로그인과 정기 결제로 이용할 수 있게 할 예정입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">FAQ</p>
+          <h2 id="faq-title">자주 묻는 질문</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>여성 손님과 남성 손님을 따로 볼 수 있나요?</summary>
+            <p>네. 시술 메뉴와 가격, 방문 주기를 성별로 따로 둘 수 있고, 성과 분석도 여성·남성으로 나눠 비교할 수 있습니다.</p>
+          </details>
+          <details>
+            <summary>추천 할인율은 어떻게 정해지나요?</summary>
+            <p>프로모션마다 일반적으로 쓰이는 범위 안에서, 매장이 입력한 정가·변동비·최소 이익과 실제 재방문율로 넘지 말아야 할 할인율을 계산해 함께 보여 줍니다. 추천값은 출발점일 뿐이고, 최종 할인율은 사장님이 스펙트럼에서 직접 정합니다.</p>
+          </details>
+          <details>
+            <summary>고객 데이터는 어디에 저장되나요?</summary>
+            <p>데모 버전에서는 사용 중인 기기의 브라우저에만 저장되고 서버로 전송되지 않습니다. 브라우저 데이터를 지우거나 기기를 바꾸면 사라지므로, 설정 화면에서 백업 파일을 내려받아 두세요.</p>
+          </details>
+          <details>
+            <summary>문자나 알림톡을 대신 보내 주나요?</summary>
+            <p>지금은 다시 올 때가 된 손님 목록과 안내 문구를 준비해 드리고, 발송은 매장에서 쓰는 채널로 합니다. 광고성 메시지는 미리 수신에 동의한 손님에게만, (광고) 표시와 수신 거부 방법을 넣어 보내야 하며, 밤 9시부터 다음 날 아침 8시 사이에는 별도 동의가 필요합니다.</p>
+          </details>
+          <details>
+            <summary>지금 쓰는 엑셀 기록을 옮길 수 있나요?</summary>
+            <p>고객 데이터 화면에서 CSV 양식을 내려받아 엑셀에서 채운 뒤 올리면 됩니다. 올리기 전에 중복 기록, 잘못된 날짜, 빈 칸을 검사해 알려 드립니다.</p>
+          </details>
+          <details>
+            <summary>결제는 언제부터 할 수 있나요?</summary>
+            <p>정식 출시 때 매장당 월 29,000원(VAT 포함) 정기 결제로 시작할 예정입니다. 그 전까지는 데모를 무료로 써 볼 수 있습니다.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-band" id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <h2 id="contact-title">우리 매장에 맞는지 먼저 확인해 보세요</h2>
+        <p>데모는 가입 없이 바로 써 볼 수 있고, 샘플 데이터로 모든 화면을 둘러볼 수 있습니다. 도입 문의 채널은 준비 중입니다.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/app/">데모 체험하기</a>
+          <!-- 문의 채널을 만들면 여기에 버튼을 추가하세요. 예)
+          <a class="btn btn-line" href="https://pf.kakao.com/_채널ID">카카오톡 채널로 문의</a>
+          <a class="btn btn-line" href="mailto:문의@도메인">이메일로 문의</a>
+          -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© 2026 WAXFIT · 왁스핏 — 왁싱샵 첫 방문 유인·재방문 설계 도구</p>
+      <p><a href="/app/">데모</a> · <a href="#faq">자주 묻는 질문</a></p>
+    </div>
+  </footer>
+</body>
+</html>
