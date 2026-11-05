@@ -88,8 +88,13 @@ export async function submit({ siteUrl, urls, config, fetchImpl = fetch, attempt
         signal: AbortSignal.timeout(20000),
       });
       const ok = res.status === 200 || res.status === 202;
-      results.push({ endpoint, status: res.status, ok });
-      const text = `${endpoint} → HTTP ${res.status} ${STATUS_TEXT[res.status] ?? ''}`.trim();
+      // 네이버 창구는 주소·키가 맞아도 거절(403/422)할 수 있음 — 확인할 점을 함께 안내 (공용 창구 접수와는 별개)
+      const hint =
+        !ok && /naver\.com/.test(endpoint) && (res.status === 403 || res.status === 422)
+          ? ' — 네이버 서치어드바이저에 이 사이트를 등록·소유확인했는지 확인하세요. github.io 하위 경로 주소는 거절될 수 있어 자체 도메인을 권장합니다 (guide/SEARCH.md 2단계)'
+          : '';
+      results.push({ endpoint, status: res.status, ok, hint });
+      const text = `${endpoint} → HTTP ${res.status} ${STATUS_TEXT[res.status] ?? ''}`.trim() + hint;
       if (ok) console.log(`✔ ${text}`);
       else warn(text);
     } catch (err) {

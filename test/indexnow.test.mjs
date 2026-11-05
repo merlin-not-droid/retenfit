@@ -86,6 +86,20 @@ test('submit: 키 파일 확인 후 IndexNow 규격대로 전송', async (t) => 
   });
 });
 
+test('submit: 네이버 창구가 거절하면 확인할 점을 함께 알림', async () => {
+  const key = 'abcdef0123456789';
+  const siteUrl = 'https://owner.github.io/demo/';
+  const fetchImpl = async (url) => {
+    if (String(url).startsWith(`${siteUrl}${key}.txt`)) return new Response(key, { status: 200 });
+    return new Response('', { status: String(url).includes('naver.com') ? 422 : 202 });
+  };
+  const config = { indexNow: { enabled: true, key, endpoints: ['https://searchadvisor.naver.com/indexnow', 'https://api.indexnow.org/indexnow'] } };
+  const results = await submit({ siteUrl, config, urls: [siteUrl], fetchImpl, attempts: 1 });
+  assert.deepEqual(results.map((r) => [r.status, r.ok]), [[422, false], [202, true]]);
+  assert.match(results[0].hint, /서치어드바이저에 이 사이트를 등록/);
+  assert.equal(results[1].hint, '');
+});
+
 test('submit: 키 파일이 아직 없으면 보내지 않음 (실패해도 예외 없음)', async (t) => {
   const { base, key, received } = await startMockServer(t, { serveKey: false });
   const config = { indexNow: { enabled: true, key, endpoints: [`${base}/indexnow`] } };
