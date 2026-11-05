@@ -1,5 +1,9 @@
 # WAXFIT (왁스핏)
 
+[![사이트 배포](https://github.com/merlin-not-droid/waxfit/actions/workflows/deploy.yml/badge.svg)](https://github.com/merlin-not-droid/waxfit/actions/workflows/deploy.yml)
+
+**사이트: <https://merlin-not-droid.github.io/waxfit/>** · 데모 앱: <https://merlin-not-droid.github.io/waxfit/app/>
+
 왁싱샵 사장님을 위한 **첫 방문 유인 · 재방문 설계 · 성과 분석** 도구입니다.
 GitHub에 올리면 자동으로 검사한 뒤 GitHub Pages로 배포하고, 네이버·구글이 찾을 수 있도록 검색 등록에 필요한 것들을 자동으로 만들어 줍니다.
 
