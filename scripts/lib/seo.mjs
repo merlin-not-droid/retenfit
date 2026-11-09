@@ -1,5 +1,5 @@
 // 페이지 한 장을 "검색엔진이 읽기 좋은 상태"로 만드는 처리.
-//  1) 루트 기준 링크(/about/)에 하위 경로(/waxfit/) 붙이기
+//  1) 루트 기준 링크(/about/)에 하위 경로(/retenfit/) 붙이기
 //  2) <html lang> 보장
 //  3) <head>에 빠진 태그만 채우기 — canonical, Open Graph, 소유 확인, JSON-LD, 통계
 import {

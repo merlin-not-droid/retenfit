@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // 로컬 테스트 서버: 사이트 + 가짜 카카오 로그인 + 가짜 정기결제 + 운영자 분석 데이터
 //
-//   node scripts/dev-backend.mjs        →  http://localhost:4174/waxfit/
+//   node scripts/dev-backend.mjs        →  http://localhost:4174/retenfit/
 //
 // - 실제 카카오 로그인·실제 결제는 일어나지 않습니다(이름만 넣는 가짜 로그인, 가짜 카드).
 // - 결제 규칙은 운영 서버와 같은 파일(supabase/functions/_shared)을 그대로 씁니다.
@@ -21,7 +21,7 @@ import { staticHandler } from './serve.mjs';
 
 export const ADMIN_NICKNAME = '운영자';
 
-export async function createDevBackend({ outDir = null, basePath = '/waxfit/', seed = true, startToday = todayKST() } = {}) {
+export async function createDevBackend({ outDir = null, basePath = '/retenfit/', seed = true, startToday = todayKST() } = {}) {
   const store = memoryStore();
   const users = new Map();
   const sessions = new Map();

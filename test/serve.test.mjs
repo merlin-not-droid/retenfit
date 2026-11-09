@@ -34,10 +34,10 @@ test('--live 미리보기는 응답에서만 실제 Supabase 모드로 바꾸고
   write(outDir, rel, source.replace(/^(\s*mode:\s*)'\w+'/m, "$1'off'"));
   const before = read(outDir, rel);
   const configFrom = async (live) => {
-    const server = createServer({ outDir, basePath: '/waxfit/', live });
+    const server = createServer({ outDir, basePath: '/retenfit/', live });
     await new Promise((r) => server.listen(0, '127.0.0.1', r));
     t.after(() => server.close());
-    return (await fetch(`http://127.0.0.1:${server.address().port}/waxfit/${rel}`)).text();
+    return (await fetch(`http://127.0.0.1:${server.address().port}/retenfit/${rel}`)).text();
   };
 
   const live = await configFrom(true);

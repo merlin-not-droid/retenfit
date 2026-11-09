@@ -61,7 +61,7 @@ export function defaultState() {
 function storage() {
   try {
     const s = window.localStorage;
-    const probe = '__waxfit_probe__';
+    const probe = '__retenfit_probe__';
     s.setItem(probe, '1');
     s.removeItem(probe);
     return s;

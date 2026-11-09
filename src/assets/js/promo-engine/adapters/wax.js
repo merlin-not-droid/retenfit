@@ -7,15 +7,15 @@ import { clamp } from '../util.js';
 // 왁싱샵 대시보드 데이터 → 엔진 입력, 엔진 출력 → 왁싱샵 앱 프로모션 선택지.
 // 왁싱샵 앱의 localStorage 상태(state.js의 defaultState 구조)를 그대로 받는다. 손님 개인정보는 집계에만 쓰고 밖으로 내보내지 않는다.
 
-                                                                                                                                              
-                                                                                                                                                     
-                                                                                                                                                                             
-                                                                                                                              
-                              
-                                                                                                                                   
-                              
-                        
-                       
+                                                                                                                                           
+                                                                                                                                                  
+                                                                                                                                                                          
+                                                                                                                           
+                           
+                                                                                                                                
+                           
+                     
+                    
  
 
 /** 왁싱샵 앱에 아직 없는 매장 정보 — 매장 설정 화면에 '매장 진단' 항목으로 받는다 */
@@ -55,18 +55,18 @@ export const ENGINE_TO_WAX                         = Object.fromEntries(Object.e
 const dayNum = (s        ) => Math.floor(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 86400000);
 const mean = (xs          ) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : NaN);
 
-function menuItem(menu                  , name                    , gender                       ) {
+function menuItem(menu               , name                    , gender                       ) {
   const same = menu.filter((m) => m.name === name);
   return same.find((m) => m.gender === gender) ?? same.find((m) => m.gender === 'A') ?? same[0] ?? null;
 }
 
 /** 왁싱샵 앱 상태 + 매장 진단 정보 → 엔진의 StoreProfile (asOf: 'YYYY-MM-DD') */
-export function storeFromWax(state             , ctx             , asOf        , id = 'wax-local')               {
+export function storeFromWax(state          , ctx             , asOf        , id = 'wax-local')               {
   const { settings } = state;
   const t = dayNum(asOf);
   const W = settings.windowDays || 60;
   const customers = new Map(state.customers.map((c) => [c.id, c]));
-  const timelines = new Map                       ();
+  const timelines = new Map                    ();
   for (const v of state.visits) {
     if (v.date > asOf) continue;
     if (!timelines.has(v.customerId)) timelines.set(v.customerId, []);
@@ -116,8 +116,8 @@ export function storeFromWax(state             , ctx             , asOf        ,
   }
 
   const recent = state.visits.filter((v) => v.date <= asOf && t - dayNum(v.date) <= 180);
-  const priceOf = (v             ) => v.listPrice ?? menuItem(settings.menu, v.service, customers.get(v.customerId)?.gender)?.price ?? v.paid;
-  const costOf = (v             ) => v.variableCost ?? menuItem(settings.menu, v.service, customers.get(v.customerId)?.gender)?.variableCost ?? NaN;
+  const priceOf = (v          ) => v.listPrice ?? menuItem(settings.menu, v.service, customers.get(v.customerId)?.gender)?.price ?? v.paid;
+  const costOf = (v          ) => v.variableCost ?? menuItem(settings.menu, v.service, customers.get(v.customerId)?.gender)?.variableCost ?? NaN;
   const menuPrice = mean(settings.menu.map((m) => m.price));
   const avgTicket = mean(recent.map(priceOf)) || menuPrice || 60000;
   const costRates = recent.map((v) => costOf(v) / priceOf(v)).filter((x) => Number.isFinite(x));
@@ -170,7 +170,7 @@ export function storeFromWax(state             , ctx             , asOf        ,
   };
 }
 
-                                   
+                                
                    
                
                        
@@ -214,7 +214,7 @@ export function levelFromWaxRate(device                 , rate                  
 }
 
 /** 엔진 플랜 → 왁싱샵 앱 첫 방문 유인·재방문 설계 화면에서 바로 고를 수 있는 형태 */
-export function waxSuggestions(plan      , store              )                     {
+export function waxSuggestions(plan      , store              )                  {
   return plan.selected.map((e) => ({
     engineId: e.device.id,
     name: e.device.name,

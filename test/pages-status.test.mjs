@@ -14,7 +14,7 @@ const run = promisify(execFile);
 /** 가짜 GitHub API로 pages-status.mjs를 실행하고 GITHUB_OUTPUT을 읽음 */
 async function pagesStatus(t, { status, body, event = 'push', ref = 'refs/heads/main' }) {
   const server = http.createServer((req, res) => {
-    assert.equal(req.url, '/repos/owner/waxfit/pages');
+    assert.equal(req.url, '/repos/owner/retenfit/pages');
     assert.equal(req.headers.authorization, 'Bearer test-token');
     res.writeHead(status, { 'content-type': 'application/json' }).end(JSON.stringify(body ?? {}));
   });
@@ -32,7 +32,7 @@ async function pagesStatus(t, { status, body, event = 'push', ref = 'refs/heads/
       env: {
         PATH: process.env.PATH,
         GITHUB_API_URL: `http://127.0.0.1:${server.address().port}`,
-        GITHUB_REPOSITORY: 'owner/waxfit',
+        GITHUB_REPOSITORY: 'owner/retenfit',
         GITHUB_TOKEN: 'test-token',
         GITHUB_EVENT_NAME: event,
         GITHUB_REF: ref,
@@ -52,8 +52,8 @@ async function pagesStatus(t, { status, body, event = 'push', ref = 'refs/heads/
 }
 
 test('Pages가 GitHub Actions 방식이면 배포, 실제 주소 사용', async (t) => {
-  const r = await pagesStatus(t, { status: 200, body: { build_type: 'workflow', html_url: 'http://waxfit.example.kr/' } });
-  assert.deepEqual(r.outputs, { deployable: 'true', site_url: 'https://waxfit.example.kr/' });
+  const r = await pagesStatus(t, { status: 200, body: { build_type: 'workflow', html_url: 'http://retenfit.example.kr/' } });
+  assert.deepEqual(r.outputs, { deployable: 'true', site_url: 'https://retenfit.example.kr/' });
 });
 
 test('Pages가 꺼져 있으면 배포를 건너뛰고 켜는 방법 안내 (실패 처리 안 함)', async (t) => {
@@ -65,7 +65,7 @@ test('Pages가 꺼져 있으면 배포를 건너뛰고 켜는 방법 안내 (실
 });
 
 test("'Deploy from a branch' 방식이면 바꾸라고 안내", async (t) => {
-  const r = await pagesStatus(t, { status: 200, body: { build_type: 'legacy', html_url: 'https://owner.github.io/waxfit/' } });
+  const r = await pagesStatus(t, { status: 200, body: { build_type: 'legacy', html_url: 'https://owner.github.io/retenfit/' } });
   assert.equal(r.outputs.deployable, 'false');
   assert.match(r.summary, /Deploy from a branch/);
 });

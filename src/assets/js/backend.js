@@ -36,7 +36,7 @@ function offBackend() {
 
 // ── 로컬 테스트 서버(scripts/dev-backend.mjs): 카카오·PortOne 대신 가짜 로그인·가짜 카드 ──
 function devBackend() {
-  const KEY = 'waxfit:dev-session';
+  const KEY = 'retenfit:dev-session';
   const read = () => {
     try {
       return JSON.parse(sessionStorage.getItem(KEY));

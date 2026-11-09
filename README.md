@@ -1,8 +1,8 @@
 # RETENFIT (리텐핏)
 
-[![사이트 배포](https://github.com/merlin-not-droid/waxfit/actions/workflows/deploy.yml/badge.svg)](https://github.com/merlin-not-droid/waxfit/actions/workflows/deploy.yml)
+[![사이트 배포](https://github.com/merlin-not-droid/retenfit/actions/workflows/deploy.yml/badge.svg)](https://github.com/merlin-not-droid/retenfit/actions/workflows/deploy.yml)
 
-**사이트: <https://merlin-not-droid.github.io/waxfit/>**
+**사이트: <https://merlin-not-droid.github.io/retenfit/>**
 
 **미용실·왁싱샵 사장님을 위한 재방문 설계 서비스.** 손님이 다시 올 때를 계산하고, 매장마다 다른 프로모션을 매달 추천합니다.
 요금: 첫 3개월 월 4,900원 → 4개월째부터 월 8,900원(부가세 포함), 카카오 로그인 + 카드 정기결제. 설정: [guide/BILLING.md](guide/BILLING.md)
@@ -86,7 +86,7 @@
    - 모든 페이지: canonical 주소, Open Graph(카카오톡·SNS 미리보기), `lang="ko"`, 파비콘
    - 홈: 구글·네이버 소유 확인 태그, 구조화 데이터(JSON-LD: 사이트 이름·브랜드·공식 채널)
    - `sitemap.xml`(페이지별 마지막 수정 시각 = 커밋 시각), `robots.txt`, `404.html`
-   - 하위 경로(`/waxfit/`) 배포 시 `/salon/` 같은 링크를 자동 보정
+   - 하위 경로(`/retenfit/`) 배포 시 `/salon/` 같은 링크를 자동 보정
 4. **배포 전 검사** (`npm run check`) — 오류가 있으면 배포하지 않음
    - 제목·설명·h1·canonical 누락, 깨진 링크, 이미지 대체 텍스트, `TODO` 자리표시, https가 아닌 리소스, 홈 noindex, robots.txt 전체 차단 등
 5. **GitHub Pages 배포**
@@ -130,9 +130,9 @@ npm test
 npm run build && npm run check
 ```
 
-`npm run preview`는 `http://localhost:4173/waxfit/` 처럼 실제와 같은 하위 경로로 띄웁니다.
+`npm run preview`는 `http://localhost:4173/retenfit/` 처럼 실제와 같은 하위 경로로 띄웁니다.
 
-결제 흐름까지 보려면 아래 명령 뒤 `http://localhost:4174/waxfit/` 를 엽니다(가짜 카카오 로그인·가짜 카드, 운영자 로그인 이름 ‘운영자’).
+결제 흐름까지 보려면 아래 명령 뒤 `http://localhost:4174/retenfit/` 를 엽니다(가짜 카카오 로그인·가짜 카드, 운영자 로그인 이름 ‘운영자’).
 
 ```bash
 node scripts/dev-backend.mjs

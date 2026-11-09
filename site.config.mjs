@@ -14,7 +14,7 @@ export default {
   // 배포 주소. GitHub Actions에서 배포할 때는 저장소의 실제 Pages 주소
   // (커스텀 도메인을 연결했다면 그 도메인)를 자동으로 읽어서 이 값 대신 씁니다.
   // 이 값은 내 컴퓨터에서 빌드하거나 Pages를 켜기 전에만 쓰입니다.
-  siteUrl: 'https://merlin-not-droid.github.io/waxfit/',
+  siteUrl: 'https://merlin-not-droid.github.io/retenfit/',
 
   siteName: 'RETENFIT',
   // 검색 결과에 사이트 이름으로 쓰일 수 있는 다른 표기

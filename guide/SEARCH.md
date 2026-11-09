@@ -14,7 +14,7 @@
 
 1. <https://search.google.com/search-console> 접속 → **속성 추가**
    - 자체 도메인이 있으면 **도메인** 속성(DNS TXT 인증)이 가장 확실합니다. 이 경우 3번의 HTML 태그는 필요 없습니다.
-   - `github.io` 주소라면 **URL 접두어** 에 배포 주소 전체(예: `https://<아이디>.github.io/waxfit/`) 입력
+   - `github.io` 주소라면 **URL 접두어** 에 배포 주소 전체(예: `https://<아이디>.github.io/retenfit/`) 입력
 2. 확인 방법에서 **HTML 태그** 선택 → `<meta name="google-site-verification" content="……">` 의 **content 값**을 복사
 3. `site.config.mjs` 에 붙여넣고 커밋·push
 
@@ -25,7 +25,7 @@
 
    (태그 전체를 붙여넣어도 content 값만 골라 씁니다.)
 4. Actions에서 배포가 끝나면 서치 콘솔에서 **확인** 클릭
-5. 왼쪽 메뉴 **Sitemaps** → `sitemap.xml` 제출 (주소 전체: `https://…/waxfit/sitemap.xml`)
+5. 왼쪽 메뉴 **Sitemaps** → `sitemap.xml` 제출 (주소 전체: `https://…/retenfit/sitemap.xml`)
 6. 상단 **URL 검사** 에 홈 주소 입력 → **색인 생성 요청**
 
 구글은 IndexNow를 쓰지 않으므로, 이후에는 제출한 sitemap.xml을 주기적으로 읽어 새 페이지를 찾습니다.
@@ -76,7 +76,7 @@
 
 | 확인할 것 | 방법 |
 |---|---|
-| 구글 색인 여부 | 구글에서 `site:retenfit.kr` (또는 `site:<아이디>.github.io/waxfit`) 검색, 서치 콘솔 **페이지** 보고서 |
+| 구글 색인 여부 | 구글에서 `site:retenfit.kr` (또는 `site:<아이디>.github.io/retenfit`) 검색, 서치 콘솔 **페이지** 보고서 |
 | 네이버 수집 여부 | 서치어드바이저 **리포트 → 사이트 현황·수집 현황** |
 | 공유 미리보기 | 카카오톡에 주소를 보내 보기 (캐시 초기화: [카카오 공유 디버거](https://developers.kakao.com/tool/debugger/sharing)) |
 | 구조화 데이터 | [리치 결과 테스트](https://search.google.com/test/rich-results) 에 주소 입력 |

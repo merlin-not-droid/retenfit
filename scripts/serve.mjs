@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// 내 컴퓨터에서 미리보기:  npm run preview  →  http://localhost:4173/waxfit/
+// 내 컴퓨터에서 미리보기:  npm run preview  →  http://localhost:4173/retenfit/
 //
-// GitHub Pages와 같은 하위 경로(/waxfit/)로 띄우므로, 하위 경로 때문에
+// GitHub Pages와 같은 하위 경로(/retenfit/)로 띄우므로, 하위 경로 때문에
 // 깨지는 링크·CSS를 배포 전에 미리 확인할 수 있습니다.
 //   --no-build  이미 만든 dist/를 그대로 띄우기
 //   --live      실제 Supabase에 연결해 시험하기(카카오 로그인·서버 함수가 진짜로 동작합니다).

@@ -9,7 +9,7 @@ export const PROJECT_URL = 'https://example-user.github.io/demo/';
 export const DOMAIN_URL = 'https://demo.example.com/';
 
 /** 테스트가 끝나면 지워지는 임시 폴더 */
-export function tempDir(t, prefix = 'waxfit-test-') {
+export function tempDir(t, prefix = 'retenfit-test-') {
   const dir = mkdtempSync(path.join(tmpdir(), prefix));
   // rmSync(recursive)는 Node 24(Windows) 비ASCII 경로에서 강제 종료되므로 비동기 rm 사용 (scripts/build.mjs 참고)
   t.after(() => rm(dir, { recursive: true, force: true }));

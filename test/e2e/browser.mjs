@@ -40,16 +40,16 @@ const { createServer } = await import('../../scripts/serve.mjs');
 
 // 결제 서버를 끈 상태(지금 공개 사이트와 같음)
 const PORT = Number(process.env.E2E_PORT || 4321);
-const BASE = `http://localhost:${PORT}/waxfit/`;
+const BASE = `http://localhost:${PORT}/retenfit/`;
 const outDir = path.join(work, 'dist');
 await build({ root: repo, outDir, siteUrl: BASE });
-const server = createServer({ outDir, basePath: '/waxfit/' });
+const server = createServer({ outDir, basePath: '/retenfit/' });
 await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
 
 // 가짜 로그인·결제 서버(결제 흐름 확인용)
 const DEV_PORT = PORT + 1;
-const DEV_BASE = `http://localhost:${DEV_PORT}/waxfit/`;
-const dev = await createDevBackend({ outDir, basePath: '/waxfit/' });
+const DEV_BASE = `http://localhost:${DEV_PORT}/retenfit/`;
+const dev = await createDevBackend({ outDir, basePath: '/retenfit/' });
 const devServer = http.createServer(dev.handler);
 await new Promise((r) => devServer.listen(DEV_PORT, '127.0.0.1', r));
 
@@ -93,8 +93,8 @@ check('처음: 제목', (await page.title()).startsWith('리텐핏'));
 check('처음: h1 1개', (await page.locator('h1').count()) === 1);
 check('처음: 스크롤 없이 한 화면', await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight));
 check('처음: 세로로 반 나눔', await page.evaluate(() => getComputedStyle(document.querySelector('.split')).gridTemplateColumns.split(' ').length === 2));
-check('처음: 미용실 버튼', (await page.locator('.half--salon .half-cta').getAttribute('href')) === '/waxfit/salon/');
-check('처음: 왁싱샵 버튼', (await page.locator('.half--wax .half-cta').getAttribute('href')) === '/waxfit/wax/');
+check('처음: 미용실 버튼', (await page.locator('.half--salon .half-cta').getAttribute('href')) === '/retenfit/salon/');
+check('처음: 왁싱샵 버튼', (await page.locator('.half--wax .half-cta').getAttribute('href')) === '/retenfit/wax/');
 check('처음: Pretendard 폰트 지정', await page.evaluate(() => getComputedStyle(document.body).fontFamily.includes('Pretendard')));
 check('처음: canonical', (await page.locator('link[rel=canonical]').getAttribute('href')) === BASE);
 await noOldNames(page, '처음');
@@ -102,12 +102,12 @@ await page.screenshot({ path: path.join(shots, 'landing-desktop.png') });
 
 // ── 업종별 소개 ───────────────────────────────────────
 await page.click('.half--salon .half-cta');
-await page.waitForURL(/\/waxfit\/salon\/$/);
+await page.waitForURL(/\/retenfit\/salon\/$/);
 await page.waitForSelector('.plan-rows li');
 check('미용실 소개: 초록 색', (await page.locator('.b-top .btn-primary').evaluate((e) => getComputedStyle(e).backgroundColor)) === 'rgb(33, 78, 66)');
 check('미용실 소개: 실제 계산 미리보기', (await page.locator('.plan-rows li').count()) >= 3);
 const payLinks = await page.locator('a[href*="checkout"]').evaluateAll((a) => a.map((x) => [x.textContent.trim(), x.getAttribute('href')]));
-check('미용실 소개: 시작 버튼은 모두 결제하기', payLinks.length >= 3 && payLinks.every(([t, h]) => t === '결제하기' && h === '/waxfit/checkout/?service=salon'), `${payLinks.length}개`);
+check('미용실 소개: 시작 버튼은 모두 결제하기', payLinks.length >= 3 && payLinks.every(([t, h]) => t === '결제하기' && h === '/retenfit/checkout/?service=salon'), `${payLinks.length}개`);
 const tabs = page.locator('[role="tab"]');
 await tabs.first().focus();
 await page.keyboard.press('ArrowRight');

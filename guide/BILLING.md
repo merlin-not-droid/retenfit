@@ -33,9 +33,9 @@ GitHub Pages(정적)                         Supabase(서울 리전 권장)
 node scripts/dev-backend.mjs
 ```
 
-`http://localhost:4174/waxfit/` — 가짜 카카오 로그인(이름만 입력)과 가짜 카드로 가입·해지까지 해 볼 수 있습니다. 실제 결제는 일어나지 않습니다.
+`http://localhost:4174/retenfit/` — 가짜 카카오 로그인(이름만 입력)과 가짜 카드로 가입·해지까지 해 볼 수 있습니다. 실제 결제는 일어나지 않습니다.
 
-- 운영자 분석: `/waxfit/admin/`에서 이름을 **운영자**로 로그인(가상 구독 매장 36곳이 들어 있음)
+- 운영자 분석: `/retenfit/admin/`에서 이름을 **운영자**로 로그인(가상 구독 매장 36곳이 들어 있음)
 - 시간 넘기기: `POST /__dev/api/clock` 에 `{"days": 31}` → 그사이 정기결제가 실행됨
 - 결제 실패 확인: 결제 페이지의 ‘테스트 카드’를 ‘결제 실패’로
 
@@ -50,7 +50,7 @@ node scripts/dev-backend.mjs
 1. 프로젝트 만들기(Region: Northeast Asia (Seoul) 권장).
 2. SQL 편집기에서 `supabase/migrations/20261108000000_billing.sql` 실행.
 3. Authentication → Sign In / Providers → **Kakao**: **Kakao enabled** 켜기, **REST API Key**·**Client Secret Code** 입력, **Allow users without an email** 켜기(이메일을 못 받는 계정도 가입이 막히지 않게 합니다. 코드는 이메일이 없어도 동작합니다).
-4. Authentication → URL Configuration: **Site URL** `https://merlin-not-droid.github.io/waxfit/`, **Redirect URLs** `https://merlin-not-droid.github.io/waxfit/**`, `http://localhost:4173/waxfit/**`(로컬 확인용).
+4. Authentication → URL Configuration: **Site URL** `https://merlin-not-droid.github.io/retenfit/`, **Redirect URLs** `https://merlin-not-droid.github.io/retenfit/**`, `http://localhost:4173/retenfit/**`(로컬 확인용).
 
 ## 3. 카카오 디벨로퍼스
 
@@ -118,7 +118,7 @@ export default {
 npm run preview:live
 ```
 
-주소는 `http://localhost:4173/waxfit/checkout/`입니다. Supabase **Redirect URLs**에 `http://localhost:4173/waxfit/**`가 있어야 카카오 로그인 뒤 돌아옵니다.
+주소는 `http://localhost:4173/retenfit/checkout/`입니다. Supabase **Redirect URLs**에 `http://localhost:4173/retenfit/**`가 있어야 카카오 로그인 뒤 돌아옵니다.
 
 ## 7. 운영자 등록 (나만 쓰는 분석 화면)
 
@@ -143,7 +143,7 @@ insert into public.admins (user_id) select id from auth.users where email = '운
 - [ ] 정가 전환 7일 전 안내를 실제로 보낼 채널(문자·알림톡·이메일) 정하기 — 지금은 운영자 분석에서 대상과 문구를 뽑아 직접 보냄
 - [ ] 결제 실패·해지 안내 방법, 영수증(PG 제공) 확인
 - [ ] 카카오 **연결 해제 웹훅(User Unlinked)** 처리 정하기: 카카오 콘솔이 설정을 권장합니다. 회원이 카카오 쪽에서 연결을 끊어도 지금은 서비스가 알 수 없고, 이를 받는 서버 함수도 아직 없습니다.
-- [ ] Supabase **Redirect URLs**에서 `http://localhost:4173/waxfit/**` 지우기, **Edge Functions → Secrets**에 `SITE_ORIGIN` 넣기
+- [ ] Supabase **Redirect URLs**에서 `http://localhost:4173/retenfit/**` 지우기, **Edge Functions → Secrets**에 `SITE_ORIGIN` 넣기
 - [ ] 실 채널로 바꾼 뒤 소액 실결제 1건 → 취소로 마무리
 
 ## 보안 메모

@@ -1,4 +1,4 @@
--- WAXFIT 구독·결제·운영 분석 스키마 (Supabase / Postgres)
+-- 리텐핏 구독·결제·운영 분석 스키마 (Supabase / Postgres)
 -- 원칙: 사장님은 자기 행만 읽고, 운영자(admins)만 전체를 읽습니다.
 --       구독·결제·결제수단은 서버(Edge Functions의 service role)만 씁니다(브라우저 쓰기 정책 없음).
 
@@ -88,7 +88,7 @@ grant all on public.profiles, public.subscriptions, public.billing_keys, public.
 --   insert into public.admins (user_id) select id from auth.users where email = '운영자 카카오 이메일';
 --
 -- 하루 한 번 정기결제(대시보드에서 pg_cron·pg_net 확장을 켠 뒤 실행, 한국 시간 오전 10시 = UTC 01:00):
---   select cron.schedule('waxfit-renew', '0 1 * * *', $$
+--   select cron.schedule('retenfit-renew', '0 1 * * *', $$
 --     select net.http_post(
 --       url := 'https://프로젝트ID.supabase.co/functions/v1/renew',
 --       headers := jsonb_build_object('x-cron-secret', 'CRON_SECRET에 넣은 값')

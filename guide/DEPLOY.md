@@ -8,13 +8,13 @@
 ## 1. 저장소 만들기
 
 1. <https://github.com/new> 에서 저장소를 만듭니다.
-   - 이름: `waxfit` → 주소가 `https://<아이디>.github.io/waxfit/` 이 됩니다.
+   - 이름: `retenfit` → 주소가 `https://<아이디>.github.io/retenfit/` 이 됩니다.
    - 공개 범위: **Public** (무료 계정은 공개 저장소만 Pages를 쓸 수 있습니다)
    - README·.gitignore 추가는 체크하지 않습니다(빈 저장소).
 2. 이 폴더를 올립니다.
 
 ```bash
-git remote add origin https://github.com/<아이디>/waxfit.git
+git remote add origin https://github.com/<아이디>/retenfit.git
 ```
 
 ```bash
@@ -44,12 +44,21 @@ Pages를 켜기 전에 push 했다면, 워크플로가 빌드·검사만 하고 
 
 배포 주소는 ‘GitHub Pages 배포’ 단계 옆에 표시됩니다.
 
+## 저장소 이름을 바꿀 때
+
+GitHub 저장소 이름을 바꾸면 Pages 주소도 함께 바뀝니다. github.io의 옛 주소는 새 주소로 넘어가지 않고 404가 됩니다(git·github.com 주소만 자동으로 넘어갑니다).
+
+1. 저장소 **Settings → General → Repository name** 을 바꾸고, 내 컴퓨터의 원격 주소도 바꿉니다: `git remote set-url origin <새 주소>`
+2. `site.config.mjs`의 `siteUrl`과 문서의 주소를 고쳐 push 합니다. 다음 배포부터 새 하위 경로로 빌드됩니다(배포할 때는 Pages API의 주소를 자동으로 씁니다).
+3. Supabase **Authentication → URL Configuration** 의 **Site URL**, **Redirect URLs** 를 새 주소로 바꿉니다. 카카오 콘솔의 리다이렉트 URI는 Supabase 주소라 바꿀 필요가 없습니다.
+4. 서치 콘솔·서치어드바이저에 등록했다면 새 주소로 다시 등록합니다.
+
 ## 4. 자체 도메인 연결 (권장)
 
 `github.io` 주소로도 운영할 수 있지만 서비스라면 자체 도메인을 권합니다.
 
 - 브랜드 신뢰도: `retenfit.kr` 같은 주소가 검색 결과에서 더 믿음직합니다.
-- 검색 등록: 하위 경로(`/waxfit/`) 사이트는 robots.txt가 무시되고, 네이버 서치어드바이저·다음 웹마스터도구 등록이 제한될 수 있습니다.
+- 검색 등록: 하위 경로(`/retenfit/`) 사이트는 robots.txt가 무시되고, 네이버 서치어드바이저·다음 웹마스터도구 등록이 제한될 수 있습니다.
 - 이전 가능: 나중에 호스팅을 바꿔도 주소와 검색 기록이 유지됩니다.
 
 ### 절차
@@ -71,7 +80,7 @@ Pages를 켜기 전에 push 했다면, 워크플로가 빌드·검사만 하고 
 4. DNS 확인이 끝나면 **Enforce HTTPS** 체크 (인증서 발급까지 최대 하루)
 5. 도메인 탈취 방지: GitHub 계정 **Settings → Pages → Add a domain** 에서 TXT 레코드로 도메인 소유를 인증해 두세요.
 6. Actions에서 다시 실행하면 새 주소로 빌드됩니다. 사이트 주소는 Pages 설정에서 자동으로 읽으므로 `site.config.mjs`는 그대로 둬도 됩니다(내 컴퓨터 빌드용 값만 바꾸면 됨).
-7. 기존 `github.io/waxfit/` 주소는 GitHub이 새 도메인으로 자동 이동시킵니다. 검색 등록은 새 도메인으로 다시 합니다 → [SEARCH.md](SEARCH.md)
+7. 기존 `github.io/retenfit/` 주소는 GitHub이 새 도메인으로 자동 이동시킵니다. 검색 등록은 새 도메인으로 다시 합니다 → [SEARCH.md](SEARCH.md)
 
 ## 5. 고친 내용 배포하기
 

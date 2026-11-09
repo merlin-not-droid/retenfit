@@ -76,7 +76,7 @@ async function main() {
   if (channelKey.startsWith('channel-key-')) ok('PortOne 채널 키: 있음');
   else bad('PortOne 채널 키가 비었거나 형식이 다릅니다(channel-key-…).', 'PortOne 콘솔 → 결제 연동 → 채널 관리(정기결제 지원 PG)');
 
-  info('대시보드에서 직접 확인: Auth Redirect URLs(…/waxfit/**), Edge Function Secrets(PORTONE_API_SECRET·PORTONE_WEBHOOK_SECRET·CRON_SECRET·SITE_ORIGIN), pg_cron 예약, 운영자 등록');
+  info('대시보드에서 직접 확인: Auth Redirect URLs(…/retenfit/**), Edge Function Secrets(PORTONE_API_SECRET·PORTONE_WEBHOOK_SECRET·CRON_SECRET·SITE_ORIGIN), pg_cron 예약, 운영자 등록');
 }
 
 await main();

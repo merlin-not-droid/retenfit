@@ -47,7 +47,7 @@ test('브라우저와 서버가 같은 결제 규칙 파일을 쓴다', () => {
 
 test('로컬 테스트 서버: 로그인 → 동의·결제 → 매달 결제 → 정가 전환 → 해지, 운영자만 전체 조회', async (t) => {
   const { base, call } = await start(t, { seed: false, startToday: '2026-11-09' });
-  const cfg = await fetch(`${base}/waxfit/assets/js/backend-config.js`).then((r) => r.text());
+  const cfg = await fetch(`${base}/retenfit/assets/js/backend-config.js`).then((r) => r.text());
   assert.match(cfg, /mode: 'dev'/);
 
   assert.equal((await call('billing', { action: 'status' })).status, 401);

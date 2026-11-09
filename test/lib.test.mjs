@@ -50,7 +50,7 @@ test('사이트 주소 계산', () => {
   assert.equal(site.abs('/repo/assets/og.png'), 'https://u.github.io/repo/assets/og.png');
   assert.equal(site.pageUrl('소개/index.html'), 'https://u.github.io/repo/%EC%86%8C%EA%B0%9C/');
   assert.equal(makeSite('http://localhost:4173/repo/').url, 'http://localhost:4173/repo/'); // 로컬은 http 유지
-  assert.throws(() => makeSite('waxfit.kr'), ConfigError);
+  assert.throws(() => makeSite('retenfit.kr'), ConfigError);
 });
 
 test('설정: 소유 확인 코드·영업시간·잘못된 값', () => {

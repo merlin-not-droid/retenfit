@@ -156,16 +156,16 @@ export const encodePath = (p) => p.split('/').map(encodeURIComponent).join('/');
 
 /**
  * 배포 주소 하나로 필요한 계산을 모두 제공합니다.
- *  basePath  : '/waxfit/' (프로젝트 사이트) 또는 '/' (자체 도메인·사용자 사이트)
- *  withBase  : '/about/' → '/waxfit/about/'  (루트 기준 링크에 하위 경로 붙이기)
- *  abs       : '/assets/og.png' → 'https://.../waxfit/assets/og.png'
+ *  basePath  : '/retenfit/' (프로젝트 사이트) 또는 '/' (자체 도메인·사용자 사이트)
+ *  withBase  : '/about/' → '/retenfit/about/'  (루트 기준 링크에 하위 경로 붙이기)
+ *  abs       : '/assets/og.png' → 'https://.../retenfit/assets/og.png'
  */
 export function makeSite(rawUrl) {
   let u;
   try {
     u = new URL(str(rawUrl));
   } catch {
-    throw new ConfigError(`사이트 주소가 올바르지 않습니다: "${rawUrl}" (예: https://아이디.github.io/waxfit/)`);
+    throw new ConfigError(`사이트 주소가 올바르지 않습니다: "${rawUrl}" (예: https://아이디.github.io/retenfit/)`);
   }
   if (!/^https?:$/.test(u.protocol)) throw new ConfigError(`사이트 주소는 http(s)로 시작해야 합니다: ${rawUrl}`);
   const isLocal = LOCAL_HOSTS.has(u.hostname);
