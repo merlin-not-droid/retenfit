@@ -70,7 +70,7 @@ function tabPanels() {
   fill('tab-cross-body', cross.rows.length
     ? `<div class="table-scroll"><table class="mini-table"><thead><tr><th scope="col">고객</th><th scope="col" class="num">커트</th><th scope="col">비슷한 손님의 펌 이력</th></tr></thead><tbody>
       ${cross.rows.slice(0, 6).map((r) => `<tr><td><b>${esc(r.id)}</b></td><td class="num">${r.customer.history.cut}회</td><td>${r.peers.length}명 중 ${r.positivePeers}명</td></tr>`).join('')}
-      </tbody></table></div><p class="muted" style="margin-top:8px">비슷한 손님의 이력을 보여 줄 뿐, 구매 확률이 아닙니다. 실제 관심은 상담에서 확인합니다.</p>`
+      </tbody></table></div><p class="muted cta-note">비슷한 손님의 이력을 보여 줄 뿐, 구매 확률이 아닙니다. 실제 관심은 상담에서 확인합니다.</p>`
     : '<p class="muted">비교할 이력이 더 필요합니다.</p>');
 }
 

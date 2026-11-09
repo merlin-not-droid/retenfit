@@ -135,6 +135,35 @@ test('매장 진단 입력값을 읽는다', () => {
   assert.equal(shop.hasOnlineBooking, true);
 });
 
+test('샘플 매장은 고정 ID로 탐색 없이, 실제 매장은 저장된 키로 계산한다', () => {
+  const ids = (rec) => rec.plan.selected.map((e) => e.device.id).sort().join();
+  const sample = fresh();
+  const shown = buildSalonRecommendation(sample);
+  assert.equal(shown.store.id, 'salon-sample');
+  assert.equal(shown.store.preferences.stableMode, true);
+  assert.equal(sample.storeKey, undefined);
+
+  const own = { ...fresh(), source: 'import' };
+  own.monthlyPlans = [];
+  const first = buildSalonRecommendation(own);
+  const key = own.storeKey;
+  assert.match(key, /^salon-/);
+  assert.equal(first.recordChanged, true, '새 키는 저장되어야 다시 열어도 같은 추천이 나온다');
+  const again = buildSalonRecommendation(own);
+  assert.equal(own.storeKey, key);
+  assert.equal(again.recordChanged, false);
+  assert.equal(ids(again), ids(first));
+});
+
+test('같은 달에도 매장마다 탐색 결과가 달라 추천이 한쪽으로 쏠리지 않는다', () => {
+  const plans = new Set();
+  for (let i = 0; i < 12; i += 1) {
+    const state = { ...fresh(), source: 'import', storeKey: `salon-test-${i}`, monthlyPlans: [] };
+    plans.add(buildSalonRecommendation(state).plan.selected.map((e) => e.device.id).sort().join());
+  }
+  assert.ok(plans.size >= 2, `조합 ${plans.size}개`);
+});
+
 test('매출 보고: 방문 기록이 있으면 월별로, 합계는 기록과 일치', () => {
   const state = fresh();
   const r = salesReport(state);

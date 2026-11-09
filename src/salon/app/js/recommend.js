@@ -1,5 +1,5 @@
 // 미용실 이번 달 추천: 매장·고객 데이터 → promo-engine → 매달 달라지는 추천 (순수 함수 — test/salon.test.mjs)
-import { markAdopted, syncMonthly } from '../../../assets/js/monthly-record.js';
+import { markAdopted, storeKey, syncMonthly, withoutExploration } from '../../../assets/js/monthly-record.js';
 import { customerCopy, recommend, storeFromSalon } from '../../../assets/js/promo-engine/index.js';
 import { daysBetween, economics, planAudience, salonModel } from './core.js';
 import { addDays, promotionGroups } from './dashboard.js';
@@ -89,10 +89,13 @@ export function salonResults(state, store) {
 /** 이번 달 추천. 지난달까지의 기록과 실험 결과를 반영합니다 */
 export function buildSalonRecommendation(state) {
   const period = state.settings.month;
-  const store = storeFromSalon(state, salonContext(state), 'salon-local');
+  const isSample = state.source === 'sample';
+  const key = storeKey(state, 'salon', isSample);
+  const store = storeFromSalon(state, salonContext(state), key.id);
+  if (isSample) withoutExploration(store);
   const results = salonResults(state, store);
   const plan = recommend(store, { period, results, stores: [store], history: state.monthlyPlans ?? [], listSize: 50 });
-  const recordChanged = syncMonthly(state, plan, period);
+  const recordChanged = syncMonthly(state, plan, period) || key.created;
   return {
     store, plan, results, recordChanged,
     configured: Boolean(state.settings.shop?.configured),

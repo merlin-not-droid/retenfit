@@ -2,7 +2,7 @@
 //
 // 앱 데이터(손님·방문·시술 메뉴) + 매장 진단(settings.shop) → promo-engine → 이번 달 추천
 // 엔진 원본은 별도 프로젝트 promo-engine(TypeScript)이고, assets/js/promo-engine/ 은 거기서 생성한 브라우저용 복사본입니다.
-import { markAdopted, syncMonthly } from '../../../assets/js/monthly-record.js';
+import { markAdopted, storeKey, syncMonthly, withoutExploration } from '../../../assets/js/monthly-record.js';
 import {
   BARRIERS, BARRIER_LABEL, CATALOG_BY_ID, ENGINE_TO_WAX, WAX_TO_ENGINE, OBJECTIVES, OBJECTIVE_LABEL, SUCCESS_LABEL,
   contextualPrior, customerCopy, posterior, recommend, responseMultiplier, storeFromWax, waxRate, waxSuggestions,
@@ -86,13 +86,16 @@ function noteAdoption(state, period) {
  *  byOption    : 왁싱샵 프로모션 id → { evaluation, rate } (그 옵션에 대한 엔진 평가, 화면 배지·추천값에 사용)
  */
 export function buildRecommendation(state, asOf) {
-  const store = storeFromWax(state, shopContext(state.settings, asOf), asOf, 'wax-local');
+  const isSample = Boolean(state.meta?.demo);
+  const key = storeKey(state, 'wax', isSample);
+  const store = storeFromWax(state, shopContext(state.settings, asOf), asOf, key.id);
+  if (isSample) withoutExploration(store);
   // 효과 실험 결과(비교군)를 엔진에 넣어 우리 매장 결과로 효과 추정을 보정
   const results = campaignResults(state, asOf, store);
   const period = asOf.slice(0, 7);
   // 지난달까지의 추천·실행 기록을 넘겨, 효과가 약하거나 실행하지 않은 추천은 바꾸고 새 추천을 시도합니다
   const plan = recommend(store, { period, listSize: 50, results, stores: [store], history: state.monthlyPlans ?? [] });
-  let recordChanged = syncMonthly(state, plan, period);
+  let recordChanged = syncMonthly(state, plan, period) || key.created;
   recordChanged = noteAdoption(state, period) || recordChanged;
   const selected = new Set(plan.selected.map((e) => e.device.id));
   const byOption = new Map();

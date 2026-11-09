@@ -57,7 +57,8 @@ const app = {
     return recommendationCache.value;
   },
   clearData() {
-    Object.assign(app.state, { customers: [], visits: [], plans: [], experiments: [] });
+    // 샘플의 추천 기록이 내 매장의 다음 달 판단에 섞이지 않도록 함께 비웁니다
+    Object.assign(app.state, { customers: [], visits: [], plans: [], experiments: [], monthlyPlans: [] });
     app.state.meta.demo = false;
     app.save();
   },

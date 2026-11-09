@@ -69,6 +69,37 @@ test('기록이 없는 새 매장도 오류 없이 기본값으로 추천하고 
   assert.ok(out.includes('방문 기록이 적어'));
 });
 
+test('샘플 매장은 고정 ID로 탐색 없이, 실제 매장은 저장된 키로 계산한다', () => {
+  const sample = sampleState(asOf);
+  const shown = buildRecommendation(sample, asOf);
+  assert.equal(shown.store.id, 'wax-sample');
+  assert.equal(shown.store.preferences.stableMode, true);
+  assert.equal(sample.storeKey, undefined);
+
+  const own = sampleState(asOf);
+  own.meta.demo = false;
+  own.monthlyPlans = [];
+  const first = buildRecommendation(own, asOf);
+  const key = own.storeKey;
+  assert.match(key, /^wax-/);
+  assert.equal(first.recordChanged, true, '새 키는 저장되어야 다시 열어도 같은 추천이 나온다');
+  const again = buildRecommendation(own, asOf);
+  assert.equal(own.storeKey, key);
+  assert.equal(planIds(again), planIds(first));
+});
+
+test('같은 달에도 매장마다 탐색 결과가 달라 추천이 한쪽으로 쏠리지 않는다', () => {
+  const plans = new Set();
+  for (let i = 0; i < 12; i += 1) {
+    const state = sampleState(asOf);
+    state.meta.demo = false;
+    state.storeKey = `wax-test-${i}`;
+    state.monthlyPlans = [];
+    plans.add(planIds(buildRecommendation(state, asOf)));
+  }
+  assert.ok(plans.size >= 2, `조합 ${plans.size}개`);
+});
+
 test('이번 달 추천 화면: 목적 비중·장벽·실행 플랜이 그려진다', () => {
   const r = buildRecommendation(sampleState(asOf), asOf);
   const out = String(render({ recommendation: () => r }));

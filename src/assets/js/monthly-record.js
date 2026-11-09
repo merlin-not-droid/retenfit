@@ -8,6 +8,26 @@ export function effectText(e) {
   return extra >= 0.05 ? `+${extra.toFixed(1)}${SUCCESS_LABEL[e.device.segment]}` : '아주 작음';
 }
 
+const newKey = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+
+/**
+ * 추천에 쓸 매장 ID. 탐색 난수가 매장마다 달라야 같은 달에 모든 매장이 같은 쪽으로 쏠리지 않으므로,
+ * 실제 매장은 키를 한 번 만들어 저장합니다. 샘플 매장은 소개 화면이 늘 같도록 고정 ID를 씁니다.
+ * created가 true면 저장이 필요합니다.
+ */
+export function storeKey(state, prefix, isSample) {
+  if (isSample) return { id: `${prefix}-sample`, created: false };
+  if (state.storeKey) return { id: state.storeKey, created: false };
+  state.storeKey = `${prefix}-${newKey()}`;
+  return { id: state.storeKey, created: true };
+}
+
+/** 샘플 매장은 탐색 없이 기대값이 가장 높은 조합을 보여 줍니다(지난달 기록에 따른 교체는 그대로) */
+export function withoutExploration(store) {
+  store.preferences = { ...store.preferences, stableMode: true };
+  return store;
+}
+
 /** 이번 달 추천을 기록에 반영. 내용이 바뀌었으면 true */
 export function syncMonthly(state, plan, period) {
   state.monthlyPlans ??= [];
