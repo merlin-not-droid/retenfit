@@ -16,6 +16,27 @@ export function defaultMenu() {
   ];
 }
 
+/** 매장 진단 기본값 — 방문 기록에 없는 매장 정보(이번 달 추천에 사용, 매장 설정에서 입력) */
+export function defaultShop() {
+  return {
+    configured: false,
+    tradeArea: 'residential',
+    pricePosition: 'mid',
+    openedOn: '',
+    staffCount: 1,
+    capacityPerMonth: 150,
+    utilization: 0.6,
+    offPeakSlack: 0.3,
+    competitorDensity: 5,
+    competitorDiscountIntensity: 1,
+    reviewCount: 30,
+    rating: 4.7,
+    monthlyPromoBudget: 300000,
+    prepaidOutstanding: 0,
+    hasOnlineBooking: true,
+  };
+}
+
 export function defaultState() {
   return {
     version: 1,
@@ -27,10 +48,12 @@ export function defaultState() {
       assumedRevisitRate: 0.4,
       menuIsExample: true,
       menu: defaultMenu(),
+      shop: defaultShop(),
     },
     customers: [],
     visits: [],
     plans: [],
+    experiments: [],
     meta: { demo: false, lastBackupAt: null },
   };
 }

@@ -52,7 +52,7 @@ page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
 page.on('console', (m) => m.type() === 'error' && errors.push(`console: ${m.text()}`));
 page.on('response', (r) => r.status() >= 400 && r.url().includes('localhost') && errors.push(`HTTP ${r.status()} ${r.url()}`));
 page.on('dialog', (d) => d.accept()); // confirm() 창은 모두 '확인'
-const TITLES = { acquisition: '첫 방문 유인', retention: '재방문 설계', analytics: '성과 분석', customers: '고객 데이터', settings: '매장 설정' };
+const TITLES = { recommend: '이번 달 추천', acquisition: '첫 방문 유인', retention: '재방문 설계', analytics: '성과 분석', experiments: '효과 실험', customers: '고객 데이터', settings: '매장 설정' };
 const goTab = async (route) => { await page.click(`.app-tabs a[data-route="${route}"]`); await page.waitForSelector(`#view h1:text-is("${TITLES[route]}")`); };
 
 // ── 랜딩페이지 ─────────────────────────────────────────
@@ -61,18 +61,43 @@ check('랜딩: 제목', (await page.title()).startsWith('WAXFIT 왁스핏'));
 check('랜딩: h1 1개', (await page.locator('h1').count()) === 1);
 check('랜딩: CSS 적용(네이비 버튼)', (await page.locator('.site-header .btn-primary').evaluate((e) => getComputedStyle(e).backgroundColor)) === 'rgb(30, 42, 71)');
 check('랜딩: Pretendard 폰트 로드', await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.family.includes('Pretendard') && f.status === 'loaded'); }));
-check('랜딩: 데모 링크가 하위 경로 포함', (await page.locator('.hero a.btn-primary').getAttribute('href')) === '/waxfit/app/');
+check('랜딩: 시작 버튼이 결제 페이지(하위 경로 포함)', (await page.locator('.hero a.btn-primary').getAttribute('href')) === '/waxfit/checkout/');
+check('랜딩: 핵심 문구 강조', (await page.locator('.hero h1').textContent()).includes('단골로 만드는') && (await page.locator('.hero .lead-strong').textContent()).includes('재방문 시점을 분석'));
+check('랜딩: 체험가·정가 표시', (await page.locator('.price-card').textContent()).includes('4,900원') && (await page.locator('.price-card').textContent()).includes('8,900원'));
 check('랜딩: JSON-LD 3종', (await page.locator('script[type="application/ld+json"]').count()) === 3);
 check('랜딩: canonical', (await page.locator('link[rel=canonical]').getAttribute('href')) === BASE);
 await page.screenshot({ path: path.join(shots, 'landing-desktop.png'), fullPage: true });
 
 // ── 앱: 첫 화면 → 샘플 데이터 ───────────────────────────
+// ── 결제 페이지(결제 서버 미연결 = 오픈 준비 상태) ─────────
 await page.click('.hero a.btn-primary');
-await page.waitForURL(/\/waxfit\/app\//);
+await page.waitForURL(/\/waxfit\/checkout\//);
+check('결제: 요금 일정 5줄', (await page.locator('#schedule tr').count()) === 5);
+check('결제: 오픈 전에는 결제 버튼 막힘', await page.locator('#pay-btn').isDisabled());
+
+await page.goto(`${BASE}app/`, { waitUntil: 'networkidle' });
 check('앱: 첫 방문 안내 배너', await page.locator('.banner.welcome').isVisible());
 check('앱: robots noindex', (await page.locator('meta[name=robots]').getAttribute('content')) === 'noindex');
 await page.click('[data-action="load-sample"]');
 check('앱: 샘플 모드 배너', await page.locator('.banner.info').filter({ hasText: '샘플 데이터' }).isVisible());
+
+// ── 이번 달 추천(기본 화면) ─────────────────────────────
+check('추천: 기본 화면', (await page.locator('#view h1').textContent()) === TITLES.recommend);
+check('추천: 실행 플랜 카드', (await page.locator('.rec-card').count()) >= 1);
+check('추천: 목적 비중 4개', (await page.locator('.meter-list').first().locator('.meter-row').count()) === 4);
+const openBtn = page.locator('[data-open]').first();
+if (await openBtn.count()) {
+  await openBtn.click();
+  await page.waitForSelector('#view h1');
+  check('추천: 기존 옵션 열기', ['첫 방문 유인', '재방문 설계'].includes(await page.locator('#view h1').textContent()));
+}
+
+// ── 효과 실험(샘플에 진행 중 실험 1개) ───────────────────
+await goTab('experiments');
+check('실험: 진행 중 카드', (await page.locator('.exp-card').count()) >= 1);
+check('실험: 혜택군·비교군 결과표', (await page.locator('.xp-table tbody tr').count()) === 2);
+await page.locator('[data-xp-lookup]').first().fill('C001');
+check('실험: 손님 배정 확인', /혜택군|비교군|없습니다/.test(await page.locator('[data-xp-lookup-out]').first().textContent()));
 
 // ── 첫 방문 유인 ───────────────────────────────────────
 await page.goto(`${BASE}app/#/acquisition`);

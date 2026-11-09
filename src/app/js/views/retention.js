@@ -2,6 +2,8 @@
 import { RETENTION } from '../catalog.js';
 import { dday, diffDays, formatDate } from '../dates.js';
 import { evaluateRetention } from '../economics.js';
+import { armOf, recordMessageExposures, runningForOption } from '../experiments.js';
+import { rankOptions } from '../recommend.js';
 import { GENDER_LABEL, menuFor, menuItem, nextVisitInfo, STATUS_LABEL, uid } from '../state.js';
 import { copyText, genderSeg, html, pct, raw, toast, won } from '../ui.js';
 
@@ -9,6 +11,17 @@ const MAX_RATE = 0.4;
 const ui = { gender: 'all', status: 'due', promotionId: 'cycle-remind', rate: null, service: null, priceGender: 'F' };
 
 export const title = '재방문 설계';
+
+/** ‘이번 달 추천’에서 이 화면을 열 때 프로모션·할인율을 미리 고름 */
+export function preselect({ promotionId, rate = null }) {
+  if (RETENTION.some((p) => p.id === promotionId)) ui.promotionId = promotionId;
+  ui.rate = typeof rate === 'number' ? Math.min(rate, MAX_RATE) : null;
+}
+
+function aiBadge(info) {
+  if (!info) return '';
+  return html`${info.inPlan ? html`<span class="badge navy">이번 달 추천</span>` : ''}<span class="badge">AI ${info.rank}순위</span>`;
+}
 
 const STATUS_FILTERS = {
   due: { label: '임박·지남', match: (s) => s === 'soon' || s === 'overdue' },
@@ -60,7 +73,14 @@ export function render(app) {
   const filtered = all.filter(({ c, info }) => (ui.gender === 'all' || c.gender === ui.gender) && STATUS_FILTERS[ui.status].match(info.status));
   const consenting = filtered.filter(({ c }) => c.consent?.marketing);
   const promotion = RETENTION.find((p) => p.id === ui.promotionId) ?? RETENTION[0];
-  if (ui.rate === null) ui.rate = promotion.recommended;
+  const recommendation = app.recommendation();
+  const ai = rankOptions(recommendation, RETENTION);
+  const aiRate = ai.get(promotion.id)?.rate;
+  if (ui.rate === null) ui.rate = typeof aiRate === 'number' && promotion.range[1] ? Math.min(aiRate, MAX_RATE) : promotion.recommended;
+  const fresh = recommendation.suggestions.filter((s) => s.kind === 'retention' && !s.waxfitId);
+  // 이 프로모션으로 진행 중인 효과 실험: 안내 발송형이면 비교군을 목록에서 빼고, 결제형이면 안내만
+  const xp = runningForOption(state, promotion.id);
+  const sendable = xp?.design === 'message' ? consenting.filter(({ c }) => armOf(xp, c.id) === 'treat') : consenting;
   const options = menuFor(settings, ui.priceGender);
   if (!options.some((m) => m.name === ui.service)) ui.service = options[0]?.name ?? null;
   const item = ui.service ? menuItem(settings, ui.service, ui.priceGender) : null;
@@ -89,13 +109,14 @@ export function render(app) {
       </div>
       ${filtered.length
         ? html`<div class="table-wrap"><table>
-            <thead><tr><th scope="col">손님</th><th scope="col">시술</th><th scope="col">마지막 방문</th><th scope="col">다음 예정</th><th scope="col">수신 동의</th></tr></thead>
+            <thead><tr><th scope="col">손님</th><th scope="col">시술</th><th scope="col">마지막 방문</th><th scope="col">다음 예정</th><th scope="col">수신 동의</th>${xp?.design === 'message' ? html`<th scope="col">실험</th>` : ''}</tr></thead>
             <tbody>${filtered.slice(0, 200).map(({ c, info }) => html`<tr>
               <td><b>${c.alias}</b><span class="sub">${c.id} · ${GENDER_LABEL[c.gender]}</span></td>
               <td>${c.mainService || info.lastService}<span class="sub">주기 ${info.cycleDays}일</span></td>
               <td>${formatDate(info.lastDate, app.today)}</td>
               <td><span class="status ${info.status}">${STATUS_LABEL[info.status]} ${dday(info.daysLeft)}</span><span class="sub">${formatDate(info.nextDate, app.today)}</span></td>
               <td>${c.consent?.marketing ? html`<span class="ok-text">동의</span>` : html`<span class="muted-text">미동의</span>`}</td>
+              ${xp?.design === 'message' ? html`<td><span class="arm ${armOf(xp, c.id)}">${armOf(xp, c.id) === 'treat' ? '혜택군' : '비교군'}</span></td>` : ''}
             </tr>`)}</tbody></table></div>
             ${filtered.length > 200 ? html`<p class="help">앞의 200명만 보여 줍니다.</p>` : ''}`
         : html`<p class="empty">해당하는 손님이 없습니다. ${state.customers.length ? '' : html`<a href="#/customers">고객 데이터</a>에서 손님과 방문 기록을 추가하세요.`}</p>`}
@@ -103,15 +124,17 @@ export function render(app) {
 
     <section class="panel">
       <h2>재방문 프로모션</h2>
+      <p class="help small">‘AI 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
       <div class="promo-list" role="radiogroup" aria-label="재방문 프로모션">
         ${RETENTION.map((p) => html`
           <label class="promo ${p.id === promotion.id ? 'active' : ''}">
             <input type="radio" name="ret-promo" value="${p.id}" ${p.id === promotion.id ? raw('checked') : ''}>
-            <span class="promo-name">${p.name}</span>
+            <span class="promo-name">${p.name}${aiBadge(ai.get(p.id))}</span>
             <span class="promo-summary">${p.summary}</span>
-            ${p.range[1] ? html`<span class="promo-range">일반 추천 ${pct(p.recommended)} · 범위 ${pct(p.range[0])}~${pct(p.range[1])}</span>` : html`<span class="promo-range">할인 없음</span>`}
+            ${p.range[1] ? html`<span class="promo-range">${typeof ai.get(p.id)?.rate === 'number' ? `AI 추천 ${pct(ai.get(p.id).rate)} · ` : ''}일반 추천 ${pct(p.recommended)} · 범위 ${pct(p.range[0])}~${pct(p.range[1])}</span>` : html`<span class="promo-range">할인 없음</span>`}
           </label>`)}
       </div>
+      ${fresh.length ? html`<p class="ai-note">이번 달 추천에는 목록에 없는 <b>${fresh.map((s) => s.name).join(', ')}</b>도 있습니다. <a href="#/recommend">이번 달 추천</a>에서 이유를 보고 저장할 수 있어요.</p>` : ''}
       <p class="tip">${promotion.tip}</p>
       ${promotion.range[1] && item
         ? html`<div class="controls">
@@ -127,12 +150,13 @@ export function render(app) {
           <button type="button" class="btn btn-line btn-sm" id="ret-save">이 재방문 프로모션 저장</button>`
         : ''}
       <h3>안내 문구</h3>
-      <p class="help">수신에 동의한 손님에게만 보낼 수 있습니다. 지금 목록에서 보낼 수 있는 손님: <b>${consenting.length}명</b>${filtered.length - consenting.length ? html` (미동의 ${filtered.length - consenting.length}명 제외)` : ''}.</p>
+      <p class="help">수신에 동의한 손님에게만 보낼 수 있습니다. 지금 목록에서 보낼 수 있는 손님: <b>${sendable.length}명</b>${filtered.length - consenting.length ? html` (미동의 ${filtered.length - consenting.length}명 제외)` : ''}${consenting.length - sendable.length ? html` (실험 비교군 ${consenting.length - sendable.length}명 제외)` : ''}.</p>
+      ${xp ? html`<p class="alert caution">‘${xp.name}’ <a href="#/experiments">효과 실험</a> 진행 중 — ${xp.design === 'message' ? '목록을 복사하면 비교군은 빠지고, 보낸 날짜가 양쪽 모두 기록됩니다.' : '처음 온 손님 중 비교군에게는 이 혜택을 주지 마세요(효과 실험에서 손님별 배정 확인).'}</p>` : ''}
       ${!settings.shopName || !settings.shopContact ? html`<p class="alert caution">매장 이름과 연락처를 <a href="#/settings">매장 설정</a>에 넣으면 문구에 자동으로 들어갑니다. 광고 문자에는 보내는 사람과 수신 거부 방법이 꼭 있어야 합니다.</p>` : ''}
       <textarea id="ret-message" rows="6" aria-label="안내 문구">${message(settings, promotion, ui.rate)}</textarea>
       <div class="btn-row">
         <button type="button" class="btn btn-primary btn-sm" id="ret-copy">문구 복사</button>
-        <button type="button" class="btn btn-line btn-sm" id="ret-copy-list" ${consenting.length ? '' : raw('disabled')}>보낼 손님 목록 복사 (${consenting.length}명)</button>
+        <button type="button" class="btn btn-line btn-sm" id="ret-copy-list" ${sendable.length ? '' : raw('disabled')}>보낼 손님 목록 복사 (${sendable.length}명)</button>
       </div>
       <p class="help small">밤 9시부터 다음 날 아침 8시 사이에는 별도로 동의한 손님에게만 보낼 수 있습니다. {별칭}·{시술}·{경과}는 손님별로 바꿔 넣으세요(목록 복사에 함께 들어갑니다).</p>
       ${plans.length ? html`<h3>저장한 재방문 프로모션</h3><ul class="plan-list">${plans.map((p) => html`<li><span><b>${p.name}</b></span><button type="button" class="btn btn-ghost btn-sm" data-delete-plan="${p.id}" aria-label="${p.name} 삭제">삭제</button></li>`)}</ul>` : ''}
@@ -191,9 +215,12 @@ export function bind(root, app) {
     toast((await copyText(messageBox.value)) ? '문구를 복사했습니다.' : '복사하지 못했습니다. 직접 선택해 복사해 주세요.');
   });
   root.querySelector('#ret-copy-list').addEventListener('click', async () => {
-    const list = rows(app).filter(
+    const all = rows(app).filter(
       ({ c, info }) => c.consent?.marketing && (ui.gender === 'all' || c.gender === ui.gender) && STATUS_FILTERS[ui.status].match(info.status),
     );
+    const xp = runningForOption(state, promotion.id);
+    const experiment = xp?.design === 'message' ? xp : null;
+    const list = experiment ? all.filter(({ c }) => armOf(experiment, c.id) === 'treat') : all;
     const lines = list.map(({ c, info }) => {
       const weeks = Math.max(1, Math.round(diffDays(info.lastDate, app.today) / 7));
       const text = messageBox.value
@@ -202,7 +229,12 @@ export function bind(root, app) {
         .replaceAll('{경과}', String(weeks));
       return `[${c.alias}${c.phone ? ` · ${c.phone}` : ''}]\n${text}`;
     });
-    toast((await copyText(lines.join('\n\n'))) ? `${list.length}명분 문구를 복사했습니다.` : '복사하지 못했습니다.');
+    if (!(await copyText(lines.join('\n\n')))) return toast('복사하지 못했습니다.');
+    if (!experiment) return toast(`${list.length}명분 문구를 복사했습니다.`);
+    // 실험: 보낸 손님(혜택군)과 일부러 뺀 손님(비교군)을 같은 날짜로 기록해야 나중에 비교할 수 있음
+    const added = recordMessageExposures(experiment, all.map(({ c }) => c.id), app.today);
+    app.save();
+    toast(`혜택군 ${list.length}명분을 복사했습니다. 비교군 ${all.length - list.length}명은 뺐고, 새로 ${added}명을 실험에 기록했습니다.`);
   });
   root.querySelectorAll('[data-delete-plan]').forEach((b) =>
     b.addEventListener('click', () => {

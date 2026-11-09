@@ -1,6 +1,9 @@
 # 빌드 결과물 (GitHub Actions가 매번 새로 만듭니다)
 dist/
 
+# Supabase CLI 임시 파일
+supabase/.temp/
+
 node_modules/
 .DS_Store
 Thumbs.db

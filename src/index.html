@@ -3,8 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAXFIT 왁스핏 | 왁싱샵 첫 방문 유인·재방문 설계·성과 분석</title>
-  <meta name="description" content="왁싱샵 사장님을 위한 프로모션 설계 도구. 첫 방문 할인율을 정하면 남는 이익과 재방문으로 회수되는 정도를 바로 보여 주고, 성별·시술별 방문 주기와 재방문율 분석까지 한곳에서 관리합니다.">
+  <script>
+    // 카카오 로그인이 오류로 끝나면 Supabase가 이 페이지(Site URL)로 돌려보냅니다 → 결제 페이지에서 안내
+    if (/[?&]error(_code)?=/.test(location.search)) location.replace('checkout/' + location.search);
+  </script>
+  <title>WAXFIT 왁스핏 | 첫 방문 고객을 단골로 만드는 가장 쉬운 방법</title>
+  <meta name="description" content="왁스핏이 고객의 재방문 시점을 분석하고, 다시 방문하도록 만드는 프로모션을 추천합니다. 왁싱샵 사장님을 위한 재방문 설계 서비스, 첫 3개월 월 4,900원·이후 월 8,900원.">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="/assets/tokens.css">
@@ -18,7 +22,13 @@
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
     "inLanguage": "ko",
-    "description": "왁싱샵의 첫 방문 유인과 재방문 설계, 프로모션 성과 분석을 돕는 웹 서비스"
+    "description": "왁싱샵 고객의 재방문 시점을 분석하고, 다시 방문하도록 만드는 프로모션을 추천하는 웹 서비스",
+    "offers": {
+      "@type": "Offer",
+      "price": "8900",
+      "priceCurrency": "KRW",
+      "description": "매장당 월 8,900원(부가세 포함), 첫 3개월은 월 4,900원"
+    }
   }
   </script>
 </head>
@@ -35,7 +45,7 @@
         <a href="#pricing">요금</a>
         <a href="#faq">자주 묻는 질문</a>
       </nav>
-      <a class="btn btn-primary" href="/app/">데모 체험</a>
+      <a class="btn btn-primary" href="/checkout/">월 4,900원 시작</a>
     </div>
   </header>
 
@@ -43,12 +53,13 @@
     <section class="hero">
       <div class="wrap">
         <div>
-          <p class="eyebrow">왁싱샵 사장님을 위한 프로모션 설계 도구</p>
-          <h1>첫 방문 할인으로<br>끝내지 말고,<br><em>단골로 이어지게.</em></h1>
-          <p class="lead">WAXFIT(왁스핏)은 <strong>첫 방문 유인</strong>과 <strong>재방문 설계</strong> 두 가지에만 집중합니다. 할인율을 정하는 순간 남는 이익과 재방문으로 회수되는 정도를 보여 주고, 실제 방문 기록으로 효과를 확인합니다.</p>
+          <p class="eyebrow">왁싱샵 사장님을 위한 재방문 설계 서비스</p>
+          <h1>첫 방문 고객을<br><em>단골로 만드는</em><br>가장 쉬운 방법.</h1>
+          <p class="lead lead-strong"><strong>왁스핏이 고객의 재방문 시점을 분석하고,<br>다시 방문하도록 만드는 프로모션을 추천합니다.</strong></p>
+          <p class="price-badge"><b>첫 3개월 월 4,900원</b><span>4개월째부터 월 8,900원 · 부가세 포함 · 언제든 해지</span></p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="/app/">가입 없이 데모 체험하기</a>
-            <a class="btn btn-line" href="#features">어떤 기능이 있나요?</a>
+            <a class="btn btn-primary btn-lg" href="/checkout/">카카오로 바로 시작하기</a>
+            <a class="btn btn-line" href="#pricing">요금 자세히 보기</a>
           </div>
         </div>
 
@@ -249,7 +260,7 @@
           </article>
           <article class="card">
             <h3>내 기기에만 저장</h3>
-            <p>데모 버전의 기록은 사용 중인 브라우저에만 저장되고 서버로 보내지 않습니다. 언제든 백업 파일로 내려받을 수 있습니다.</p>
+            <p>손님 기록은 사장님 기기의 브라우저에만 저장됩니다. 서비스 개선에는 손님 개인정보를 뺀 집계 숫자(손님 수·재방문율 등)만 씁니다. 언제든 백업 파일로 내려받을 수 있습니다.</p>
           </article>
           <article class="card">
             <h3>수신 동의한 손님에게만</h3>
@@ -264,19 +275,22 @@
         <div class="section-head">
           <p class="kicker">PRICING</p>
           <h2 id="pricing-title">매장당 하나의 요금제</h2>
-          <p>고를 것이 많으면 결정이 늦어집니다. 모든 기능을 하나의 요금제에 담을 예정입니다.</p>
+          <p>고를 것이 많으면 결정이 늦어집니다. 모든 기능을 하나의 요금제에 담았습니다.</p>
         </div>
         <div class="price-card">
           <p class="plan">WAXFIT 매장 요금제</p>
-          <p class="amount">29,000원<span> / 월</span></p>
-          <p class="vat">매장 1곳 기준 · VAT 포함</p>
+          <p class="intro-tag">첫 3개월 체험가</p>
+          <p class="amount">4,900원<span> / 월</span></p>
+          <p class="regular">4개월째부터 <b>월 8,900원</b></p>
+          <p class="vat">매장 1곳 기준 · 부가세 포함 · 언제든 해지</p>
           <ul>
+            <li>이번 달 추천 · 매장별 재방문 시점 분석과 프로모션 추천</li>
             <li>첫 방문 유인 · 할인 스펙트럼 · 최소 이익 경고</li>
             <li>재방문 설계 · 방문 주기 · 안내 문구</li>
-            <li>성과 분석 · 고객 데이터 · CSV 가져오기/내보내기</li>
+            <li>성과 분석 · 효과 실험(비교군) · 고객 데이터 CSV</li>
           </ul>
-          <a class="btn btn-primary" href="/app/">지금 데모로 먼저 써 보기</a>
-          <p class="status">지금은 정식 출시 전입니다. 출시 후에는 카카오·네이버 로그인과 정기 결제로 이용할 수 있게 할 예정입니다.</p>
+          <a class="btn btn-primary" href="/checkout/">카카오 로그인하고 시작하기</a>
+          <p class="status">정가(월 8,900원)로 바뀌기 7일 전에 미리 알려 드립니다. 해지하면 이미 결제한 기간이 끝날 때까지 이용할 수 있습니다.</p>
         </div>
       </div>
     </section>
@@ -294,11 +308,11 @@
           </details>
           <details>
             <summary>추천 할인율은 어떻게 정해지나요?</summary>
-            <p>프로모션마다 일반적으로 쓰이는 범위 안에서, 매장이 입력한 정가·변동비·최소 이익과 실제 재방문율로 넘지 말아야 할 할인율을 계산해 함께 보여 줍니다. 추천값은 출발점일 뿐이고, 최종 할인율은 사장님이 스펙트럼에서 직접 정합니다.</p>
+            <p>매장 진단(상권·가격대·예약률)과 방문 기록으로 어디서 손님이 빠져나가는지, 무엇이 재방문을 막는지 계산해 매장마다 다른 프로모션과 할인율을 추천합니다. 추천값은 정가·변동비·최소 이익으로 계산한 한도를 넘지 않고, 최종 할인율은 사장님이 스펙트럼에서 직접 정합니다.</p>
           </details>
           <details>
             <summary>고객 데이터는 어디에 저장되나요?</summary>
-            <p>데모 버전에서는 사용 중인 기기의 브라우저에만 저장되고 서버로 전송되지 않습니다. 브라우저 데이터를 지우거나 기기를 바꾸면 사라지므로, 설정 화면에서 백업 파일을 내려받아 두세요.</p>
+            <p>손님 이름·연락처 같은 기록은 사용 중인 기기의 브라우저에만 저장되고 서버로 보내지 않습니다. 서비스 개선과 추천 정확도를 높이는 데는 손님 개인정보를 뺀 매장 집계 숫자만 씁니다. 브라우저 데이터를 지우거나 기기를 바꾸면 기록이 사라지므로, 설정 화면에서 백업 파일을 내려받아 두세요.</p>
           </details>
           <details>
             <summary>문자나 알림톡을 대신 보내 주나요?</summary>
@@ -309,8 +323,16 @@
             <p>고객 데이터 화면에서 CSV 양식을 내려받아 엑셀에서 채운 뒤 올리면 됩니다. 올리기 전에 중복 기록, 잘못된 날짜, 빈 칸을 검사해 알려 드립니다.</p>
           </details>
           <details>
-            <summary>결제는 언제부터 할 수 있나요?</summary>
-            <p>정식 출시 때 매장당 월 29,000원(VAT 포함) 정기 결제로 시작할 예정입니다. 그 전까지는 데모를 무료로 써 볼 수 있습니다.</p>
+            <summary>요금은 어떻게 나가나요?</summary>
+            <p>카카오로 로그인하고 카드를 등록하면 첫 달 4,900원이 바로 결제되고, 가입한 날짜에 맞춰 매달 결제됩니다. 첫 3개월은 월 4,900원, 4개월째부터 월 8,900원(부가세 포함)입니다.</p>
+          </details>
+          <details>
+            <summary>체험가가 끝나면 자동으로 바뀌나요?</summary>
+            <p>네. 가입할 때 동의하신 대로 4개월째부터 월 8,900원으로 이어집니다. 바뀌기 7일 전에 금액과 날짜를 미리 알려 드리고, 그 전에 해지하면 정가로 결제되지 않습니다.</p>
+          </details>
+          <details>
+            <summary>해지는 어떻게 하나요?</summary>
+            <p>결제 페이지의 ‘내 구독’에서 언제든 해지할 수 있습니다. 해지해도 이미 결제한 기간이 끝날 때까지 그대로 쓸 수 있고, 그 기간 안에는 해지를 취소할 수도 있습니다. 환불 기준은 <a href="/legal/#refund">이용약관·환불 안내</a>에 있습니다.</p>
           </details>
         </div>
       </div>
@@ -318,10 +340,10 @@
 
     <section class="section cta-band" id="contact" aria-labelledby="contact-title">
       <div class="wrap">
-        <h2 id="contact-title">우리 매장에 맞는지 먼저 확인해 보세요</h2>
-        <p>데모는 가입 없이 바로 써 볼 수 있고, 샘플 데이터로 모든 화면을 둘러볼 수 있습니다. 도입 문의 채널은 준비 중입니다.</p>
+        <h2 id="contact-title">첫 방문 손님을 단골로, 월 4,900원으로 시작하세요</h2>
+        <p>첫 3개월은 월 4,900원, 4개월째부터 월 8,900원입니다. 카카오로 로그인하고 카드만 등록하면 바로 쓸 수 있습니다.</p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="/app/">데모 체험하기</a>
+          <a class="btn btn-primary" href="/checkout/">구독 시작하기</a>
           <!-- 문의 채널을 만들면 여기에 버튼을 추가하세요. 예)
           <a class="btn btn-line" href="https://pf.kakao.com/_채널ID">카카오톡 채널로 문의</a>
           <a class="btn btn-line" href="mailto:문의@도메인">이메일로 문의</a>
@@ -333,8 +355,8 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>© 2026 WAXFIT · 왁스핏 — 왁싱샵 첫 방문 유인·재방문 설계 도구</p>
-      <p><a href="/app/">데모</a> · <a href="#faq">자주 묻는 질문</a></p>
+      <p>© 2026 WAXFIT · 왁스핏 — 첫 방문 고객을 단골로 만드는 가장 쉬운 방법</p>
+      <p><a href="#pricing">요금</a> · <a href="#faq">자주 묻는 질문</a> · <a href="/legal/">이용약관·환불</a> · <a href="/legal/#privacy">개인정보처리방침</a> · <a href="/app/">구독자 앱</a></p>
     </div>
   </footer>
 </body>

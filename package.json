@@ -11,6 +11,7 @@
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
     "preview": "node scripts/serve.mjs",
+    "preview:live": "node scripts/serve.mjs --live",
     "test": "node --test test/*.test.mjs",
     "test:browser": "node test/e2e/browser.mjs"
   }

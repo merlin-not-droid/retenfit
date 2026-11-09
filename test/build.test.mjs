@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { cpSync, existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
 import { build } from '../scripts/build.mjs';
 import { parseSitemap } from '../scripts/lib/sitemap.mjs';
-import { copyFixture, countOf, DOMAIN_URL, FIXTURE, jsonLd, PROJECT_URL, read, tempDir, write } from './helpers.mjs';
+import { copyDir, copyFixture, countOf, DOMAIN_URL, FIXTURE, jsonLd, PROJECT_URL, read, tempDir, write } from './helpers.mjs';
 
 test('하위 경로(프로젝트 사이트) 빌드: 검색 태그 자동 삽입', async (t) => {
   const outDir = tempDir(t);
@@ -175,7 +175,7 @@ test('빌드를 여러 번 해도 결과가 같음', async (t) => {
 
 test('sitemap lastmod = 페이지와 include 조각 중 가장 최근 커밋 시각', async (t) => {
   const root = tempDir(t);
-  cpSync(FIXTURE, root, { recursive: true });
+  copyDir(FIXTURE, root);
   const git = (args, date) =>
     execFileSync('git', ['-c', 'user.name=test', '-c', 'user.email=test@example.com', '-c', 'commit.gpgsign=false', ...args], {
       cwd: root,

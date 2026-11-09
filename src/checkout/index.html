@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAXFIT 구독 시작 | 첫 3개월 월 4,900원</title>
+  <meta name="description" content="카카오로 로그인하고 카드를 등록하면 바로 시작합니다. 첫 3개월 월 4,900원, 4개월째부터 월 8,900원(부가세 포함)이며 언제든 해지할 수 있습니다.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/assets/tokens.css">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="WAXFIT 홈">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#1e2a47"/><path d="M11 15l5.2 18L21 20.5 25.8 33 31 15" fill="none" stroke="#e3cbb8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36.5" cy="31.5" r="3" fill="#e3cbb8"/></svg>
+        <span>WAXFIT <small>왁스핏</small></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-narrow" id="checkout">
+    <p class="eyebrow">WAXFIT 매장 요금제</p>
+    <h1>첫 방문 고객을 단골로,<br>월 4,900원으로 시작하세요</h1>
+    <p class="muted">왁스핏이 고객의 재방문 시점을 분석하고, 다시 방문하도록 만드는 프로모션을 추천합니다.</p>
+    <div id="mode-note"></div>
+
+    <section class="card" aria-labelledby="plan-title">
+      <h2 id="plan-title">요금과 결제 일정</h2>
+      <table class="schedule">
+        <thead><tr><th scope="col">회차</th><th scope="col">결제일</th><th scope="col">금액</th></tr></thead>
+        <tbody id="schedule"></tbody>
+      </table>
+      <p class="muted">부가세 포함 · 매장 1곳 · 가입한 날짜에 맞춰 매달 결제 · 정가로 바뀌기 7일 전에 안내 · 언제든 해지</p>
+    </section>
+
+    <section class="card" id="my-sub" aria-labelledby="my-sub-title" hidden>
+      <h2 id="my-sub-title">내 구독</h2>
+      <div id="my-sub-body"></div>
+    </section>
+
+    <section class="card" id="step-login" aria-labelledby="login-title">
+      <h2 id="login-title"><span class="step-no" aria-hidden="true">1</span>카카오로 로그인</h2>
+      <div id="login-area"><p class="muted">불러오는 중…</p></div>
+    </section>
+
+    <div id="msg" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <section class="card" id="step-pay" aria-labelledby="pay-title">
+      <h2 id="pay-title"><span class="step-no" aria-hidden="true">2</span>카드 등록하고 첫 달 결제</h2>
+      <form id="pay-form" novalidate>
+        <div class="form-row">
+          <label>매장 이름 <input name="shopName" maxlength="30" autocomplete="organization" placeholder="예: 왁스핏 강남점" required></label>
+          <label>휴대폰 번호 <input name="phone" inputmode="tel" maxlength="13" autocomplete="tel" placeholder="010-0000-0000" required></label>
+        </div>
+        <div class="form-row">
+          <label>이메일(영수증) <input name="email" type="email" maxlength="60" autocomplete="email" placeholder="선택"></label>
+          <label id="test-card-field" hidden>테스트 카드(로컬 전용)
+            <select name="testCard"><option value="ok">정상 결제</option><option value="fail">결제 실패</option></select>
+          </label>
+        </div>
+        <div class="agree" role="group" aria-label="약관 동의">
+          <label class="all"><input type="checkbox" id="agree-all"> 아래 내용에 모두 동의합니다</label>
+          <label><input type="checkbox" name="terms" required> <span>(필수) <a href="/legal/#terms" target="_blank" rel="noopener">이용약관</a>에 동의합니다.</span></label>
+          <label><input type="checkbox" name="privacy" required> <span>(필수) <a href="/legal/#privacy" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다.</span></label>
+          <label><input type="checkbox" name="billing" required> <span>(필수) 오늘 <b>4,900원</b>이 결제되고, 가입일마다 매달 자동 결제되며 <b>4개월째부터 월 8,900원</b>으로 바뀌는 데 동의합니다. 바뀌기 7일 전에 안내받고, 언제든 해지할 수 있습니다. (<a href="/legal/#billing" target="_blank" rel="noopener">정기결제·환불 안내</a>)</span></label>
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit" id="pay-btn" disabled>4,900원 결제하고 시작하기</button>
+        <p class="muted">카드 정보는 결제대행사(PortOne·카드사)로 바로 전달되며 WAXFIT은 카드 번호를 저장하지 않습니다.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© 2026 WAXFIT · 왁스핏</p>
+      <p><a href="/">처음으로</a> · <a href="/legal/">이용약관·환불</a> · <a href="/legal/#privacy">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script type="module" src="/assets/js/checkout.js"></script>
+</body>
+</html>

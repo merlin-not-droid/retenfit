@@ -1,6 +1,8 @@
 // 첫 방문 유인: 프로모션 선택 + 할인 스펙트럼 + 이익·회수 계산
 import { ACQUISITION } from '../catalog.js';
 import { evaluateAcquisition, recommendDiscount, spectrumZones } from '../economics.js';
+import { runningForOption, switchbackWeek } from '../experiments.js';
+import { rankOptions } from '../recommend.js';
 import { GENDER_LABEL, menuFor, menuItem, uid } from '../state.js';
 import { genderSeg, html, pct, raw, toast, won, ZONE_TEXT } from '../ui.js';
 
@@ -9,6 +11,12 @@ const ui = { gender: 'F', service: null, promotionId: 'first-rate', rate: null }
 
 export const title = '첫 방문 유인';
 
+/** ‘이번 달 추천’에서 이 화면을 열 때 프로모션·할인율을 미리 고름 */
+export function preselect({ promotionId, rate = null }) {
+  if (ACQUISITION.some((p) => p.id === promotionId)) ui.promotionId = promotionId;
+  ui.rate = typeof rate === 'number' ? rate : null;
+}
+
 function current(app) {
   const { settings } = app.state;
   const options = menuFor(settings, ui.gender);
@@ -16,7 +24,45 @@ function current(app) {
   const item = ui.service ? menuItem(settings, ui.service, ui.gender) : null;
   const promotion = ACQUISITION.find((p) => p.id === ui.promotionId) ?? ACQUISITION[0];
   const revisit = app.revisitRateFor(ui.gender);
-  return { settings, options, item, promotion, revisit };
+  const recommendation = app.recommendation();
+  const ai = rankOptions(recommendation, ACQUISITION);
+  return { settings, options, item, promotion, revisit, recommendation, ai };
+}
+
+/**
+ * 시작 할인율: 매장별 추천 엔진(AI)의 값을 이 시술의 손익 한도 안으로 맞춤.
+ * 엔진 값이 없으면(예: 이번 달 후보에서 빠진 옵션) 기존 규칙 추천값(recommendDiscount)을 씀.
+ */
+function suggested({ settings, item, promotion, revisit, ai }) {
+  const rec = recommendDiscount({ promotion, price: item.price, variableCost: item.variableCost, minContribution: settings.minContribution, revisitRate: revisit.rate });
+  const aiRate = ai.get(promotion.id)?.rate;
+  if (typeof aiRate !== 'number') return { rec, value: rec.value, source: 'rule' };
+  const cap = rec.limits.max;
+  const value = cap > 0 ? Math.floor(Math.min(aiRate, cap) * 100) / 100 : 0;
+  return { rec, value, source: 'ai', aiRate, capped: aiRate > cap + 1e-9 };
+}
+
+function aiBadge(info) {
+  if (!info) return '';
+  return html`${info.inPlan ? html`<span class="badge navy">이번 달 추천</span>` : ''}<span class="badge">AI ${info.rank}순위</span>`;
+}
+
+/** 이 프로모션으로 효과 실험 중이면 할 일 안내(격주 교차: 이번 주 시행/쉼, 결제형: 비교군 확인) */
+function experimentNote(app, promotion) {
+  const xp = runningForOption(app.state, promotion.id);
+  if (!xp) return '';
+  if (xp.design === 'switchback') {
+    const w = switchbackWeek(xp, app.today);
+    return html`<p class="alert ${w.on ? 'safe' : 'caution'}">‘${xp.name}’ <a href="#/experiments">효과 실험</a>(격주 교차) 중 — 이번 주는 <b>${w.on ? '시행 주' : '쉬는 주'}</b>입니다. ${w.on ? '이 프로모션을 안내하세요.' : '이번 주에는 안내하지 마세요.'}</p>`;
+  }
+  return html`<p class="alert caution">‘${xp.name}’ <a href="#/experiments">효과 실험</a> 중 — 처음 온 손님 중 비교군에게는 이 혜택을 주지 마세요(효과 실험에서 손님별 배정 확인).</p>`;
+}
+
+/** 이번 달 플랜에 왁스핏 목록에 없는 새 첫 방문 아이디어가 있으면 알려 줌 */
+function aiNote(recommendation) {
+  const fresh = recommendation.suggestions.filter((s) => s.kind === 'acquisition' && !s.waxfitId);
+  if (!fresh.length) return '';
+  return html`<p class="ai-note">이번 달 추천에는 목록에 없는 <b>${fresh.map((s) => s.name).join(', ')}</b>도 있습니다. <a href="#/recommend">이번 달 추천</a>에서 이유를 보고 저장할 수 있어요.</p>`;
 }
 
 function zoneGradient(zones) {
@@ -26,18 +72,13 @@ function zoneGradient(zones) {
 }
 
 export function render(app) {
-  const { settings, options, item, promotion, revisit } = current(app);
+  const ctx = current(app);
+  const { settings, options, item, promotion, revisit, recommendation, ai } = ctx;
   if (!item) {
     return html`<section class="panel"><h1>${title}</h1><p>먼저 <a href="#/settings">매장 설정</a>에서 ${GENDER_LABEL[ui.gender]} 시술 메뉴를 추가해 주세요.</p></section>`;
   }
-  const rec = recommendDiscount({
-    promotion,
-    price: item.price,
-    variableCost: item.variableCost,
-    minContribution: settings.minContribution,
-    revisitRate: revisit.rate,
-  });
-  if (ui.rate === null) ui.rate = rec.value;
+  const sug = suggested(ctx);
+  if (ui.rate === null) ui.rate = sug.value;
   const plans = app.state.plans.filter((p) => p.kind === 'acquisition');
 
   return html`
@@ -56,15 +97,18 @@ export function render(app) {
   <div class="two-col">
     <section class="panel">
       <h2>프로모션 고르기</h2>
+      <p class="help small">‘AI 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
       <div class="promo-list" role="radiogroup" aria-label="첫 방문 프로모션">
         ${ACQUISITION.map((p) => html`
           <label class="promo ${p.id === promotion.id ? 'active' : ''}">
             <input type="radio" name="acq-promo" value="${p.id}" ${p.id === promotion.id ? raw('checked') : ''}>
-            <span class="promo-name">${p.name}</span>
+            <span class="promo-name">${p.name}${aiBadge(ai.get(p.id))}</span>
             <span class="promo-summary">${p.summary}</span>
-            <span class="promo-range">일반 추천 ${pct(p.recommended)} · 범위 ${pct(p.range[0])}~${pct(p.range[1])}</span>
+            <span class="promo-range">${typeof ai.get(p.id)?.rate === 'number' ? `AI 추천 ${pct(ai.get(p.id).rate)} · ` : ''}일반 추천 ${pct(p.recommended)} · 범위 ${pct(p.range[0])}~${pct(p.range[1])}</span>
           </label>`)}
       </div>
+      ${experimentNote(app, promotion)}
+      ${aiNote(recommendation)}
       <p class="tip">${promotion.tip}</p>
     </section>
 
@@ -78,7 +122,7 @@ export function render(app) {
       <div class="spectrum-scale" aria-hidden="true"><span>0%</span><span>35%</span><span>70%</span></div>
       <div class="rate-row">
         <output id="acq-rate-out" for="acq-rate" class="rate-out"></output>
-        <button type="button" class="btn btn-line btn-sm" id="acq-use-rec">추천값 ${pct(rec.value)}로</button>
+        <button type="button" class="btn btn-line btn-sm" id="acq-use-rec">${sug.source === 'ai' ? 'AI 추천' : '추천값'} ${pct(sug.value)}로</button>
       </div>
       <p class="rec-note" id="acq-rec-note"></p>
       <dl class="figures" id="acq-figures"></dl>
@@ -109,16 +153,12 @@ export function render(app) {
 }
 
 export function bind(root, app) {
-  const { settings, item, promotion, revisit } = current(app);
+  const ctx = current(app);
+  const { settings, item, promotion, revisit } = ctx;
   if (!item) return;
   const slider = root.querySelector('#acq-rate');
-  const rec = recommendDiscount({
-    promotion,
-    price: item.price,
-    variableCost: item.variableCost,
-    minContribution: settings.minContribution,
-    revisitRate: revisit.rate,
-  });
+  const sug = suggested(ctx);
+  const { rec } = sug;
   const zones = spectrumZones({
     price: item.price,
     variableCost: item.variableCost,
@@ -127,11 +167,15 @@ export function bind(root, app) {
     maxRate: MAX_RATE,
   });
   root.querySelector('#acq-track').style.background = zoneGradient(zones);
-  root.querySelector('#acq-rec').style.left = `${(rec.value / MAX_RATE) * 100}%`;
+  root.querySelector('#acq-rec').style.left = `${(sug.value / MAX_RATE) * 100}%`;
   root.querySelector('#acq-revisit-src').textContent =
     revisit.source === 'data' ? `내 매장 실제 ${pct(revisit.rate)} (${revisit.completed}명)` : `가정값 ${pct(revisit.rate)}`;
   const recNote = root.querySelector('#acq-rec-note');
-  if (rec.limited) {
+  if (sug.source === 'ai') {
+    recNote.innerHTML = String(html`AI 추천 ${pct(sug.aiRate)} — 매장 진단과 방문 기록으로 계산한 첫 시험값입니다${sug.capped
+      ? html`. 이 시술의 손익 한도(${pct(rec.limits.max)})에 맞춰 <b>${pct(sug.value)}</b>로 낮췄습니다`
+      : ` (이 시술의 손익 한도 ${pct(rec.limits.max)} 안)`}. <a href="#/recommend">이유 보기</a>`);
+  } else if (rec.limited) {
     recNote.textContent = `이 시술은 이익 여유가 작아, 이 프로모션의 최소 범위(${pct(promotion.range[0])})도 최소 이익 기준을 넘깁니다. 다른 프로모션을 고려하세요.`;
   } else if (rec.reducedFrom !== null) {
     recNote.textContent = `일반 추천 ${pct(rec.reducedFrom)}를 매장 숫자에 맞춰 ${pct(rec.value)}로 낮췄습니다 (재방문으로 회수 가능한 한도 ${pct(rec.limits.max)}).`;
@@ -176,7 +220,7 @@ export function bind(root, app) {
   update();
 
   root.querySelector('#acq-use-rec').addEventListener('click', () => {
-    slider.value = Math.round(rec.value * 100);
+    slider.value = Math.round(sug.value * 100);
     update();
   });
   root.querySelectorAll('input[name="acq-gender"]').forEach((r) =>

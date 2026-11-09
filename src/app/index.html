@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WAXFIT 앱 (데모) | 첫 방문 유인·재방문 설계·성과 분석</title>
-  <meta name="description" content="WAXFIT 데모 앱 — 첫 방문 프로모션 할인 스펙트럼, 재방문 설계, 프로모션별 재방문율 분석, 고객 데이터 관리.">
+  <meta name="description" content="WAXFIT 데모 앱 — 매장별 이번 달 프로모션 추천, 첫 방문 할인 스펙트럼, 재방문 설계, 프로모션별 재방문율 분석, 고객 데이터 관리.">
   <!-- 손님 기록을 다루는 앱 화면이라 검색 결과에는 내보내지 않습니다 (sitemap에서도 자동 제외) -->
   <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -23,9 +23,11 @@
     <span class="badge">데모</span>
   </header>
   <nav class="app-tabs" aria-label="앱 메뉴">
+    <a href="#/recommend" data-route="recommend">이번 달 추천</a>
     <a href="#/acquisition" data-route="acquisition">첫 방문 유인</a>
     <a href="#/retention" data-route="retention">재방문 설계</a>
     <a href="#/analytics" data-route="analytics">성과 분석</a>
+    <a href="#/experiments" data-route="experiments">효과 실험</a>
     <a href="#/customers" data-route="customers">고객 데이터</a>
     <a href="#/settings" data-route="settings">매장 설정</a>
   </nav>

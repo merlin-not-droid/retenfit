@@ -1,0 +1,13 @@
+# Supabase CLI 설정. 서버 함수 배포에 필요한 내용만 둡니다.
+# 세 함수 모두 게이트웨이의 JWT 검사를 끕니다. billing은 함수 안에서 로그인 토큰을 직접 확인하고,
+# renew는 CRON_SECRET, portone-webhook은 서명으로 확인합니다(guide/BILLING.md 5번).
+project_id = "waxfit"
+
+[functions.billing]
+verify_jwt = false
+
+[functions.renew]
+verify_jwt = false
+
+[functions.portone-webhook]
+verify_jwt = false

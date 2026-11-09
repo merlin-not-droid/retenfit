@@ -122,6 +122,48 @@
   font-size: clamp(16px, 1.7vw, 19px);
 }
 
+/* 핵심 문장 강조: 네이비 굵은 글씨 + 왼쪽 강조선 */
+.hero .lead-strong {
+  margin-bottom: 20px;
+  padding: 4px 0 4px 16px;
+  border-left: 4px solid var(--navy);
+  color: var(--ink);
+  font-size: clamp(17px, 1.9vw, 21px);
+  line-height: 1.6;
+}
+
+.hero .lead-strong strong {
+  color: var(--navy);
+}
+
+.price-badge {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 24px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--nude-deep);
+}
+
+.price-badge b {
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.price-badge span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.btn-lg {
+  min-height: 54px;
+  padding: 0 26px;
+  font-size: 17px;
+}
+
 .cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -500,6 +542,313 @@
   margin: 0 0 20px;
   color: var(--muted);
   font-size: 14px;
+}
+
+.price-card .intro-tag {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--on-navy);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.price-card .regular {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.price-card .regular b {
+  color: var(--navy);
+}
+
+/* ── 결제·운영 페이지 공용 ───────────────────────────── */
+.page-narrow {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(32px, 6vw, 64px) 16px 80px;
+}
+
+.page-narrow h1 {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 4.4vw, 40px);
+  line-height: 1.25;
+}
+
+/* hidden 속성이 display 지정(.form-row label 등)에 밀려 보이지 않도록 */
+[hidden] {
+  display: none !important;
+}
+
+.card {
+  margin: 20px 0 0;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.step-no {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--on-navy);
+  font-size: 14px;
+}
+
+.schedule {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.schedule th,
+.schedule td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.schedule td:last-child {
+  text-align: right;
+  font-weight: 700;
+}
+
+.agree {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.agree label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+}
+
+.agree input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--navy);
+}
+
+.agree .all {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 800;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.form-row label {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.form-row input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font: inherit;
+}
+
+.btn-kakao {
+  background: #fee500;
+  color: rgba(0, 0, 0, 0.85);
+  border-color: #fee500;
+}
+
+.btn-kakao:hover {
+  background: #f5dc00;
+}
+
+.btn-kakao svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notice {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.notice.ok { background: var(--ok-bg); color: var(--ok); }
+.notice.warn { background: var(--warn-bg); color: var(--warn); }
+.notice.bad { background: var(--bad-bg); color: var(--bad); }
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.muted-step {
+  opacity: 0.75;
+}
+
+/* ── 운영자 분석 ─────────────────────────────────── */
+.page-wide {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: clamp(28px, 5vw, 48px) 16px 80px;
+}
+
+.page-wide h1 {
+  margin: 0 0 6px;
+  font-size: clamp(26px, 3.6vw, 34px);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  margin: 20px 0 0;
+}
+
+.kpi {
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.kpi span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kpi b {
+  display: block;
+  margin-top: 4px;
+  color: var(--navy);
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table th,
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table thead th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.data-table td.num,
+.data-table th.num {
+  text-align: right;
+}
+
+.bar-chart {
+  width: 100%;
+  height: auto;
+}
+
+.bar-chart text {
+  font-family: var(--font);
+  font-size: 12px;
+  fill: var(--muted);
+}
+
+.bar-chart .bar {
+  fill: var(--navy);
+}
+
+.pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--bg-deep);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pill.trial { background: var(--warn-bg); color: var(--warn); }
+.pill.active { background: var(--ok-bg); color: var(--ok); }
+.pill.past_due { background: var(--bad-bg); color: var(--bad); }
+
+.legal h2 {
+  margin: 36px 0 8px;
+  font-size: 20px;
+}
+
+.legal h3 {
+  margin: 20px 0 6px;
+  font-size: 16px;
+}
+
+.legal p,
+.legal li {
+  color: var(--ink);
+  font-size: 15px;
 }
 
 .price-card ul {

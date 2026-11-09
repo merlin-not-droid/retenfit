@@ -1,6 +1,43 @@
-// 매장 설정: 기준 숫자, 시술 메뉴, 데이터 백업·복원
-import { GENDER_LABEL, uid } from '../state.js';
+// 매장 설정: 기준 숫자, 매장 진단(이번 달 추천용), 시술 메뉴, 데이터 백업·복원
+import { COMPETITION_LABEL, PRICE_POSITION_LABEL, TRADE_AREA_LABEL } from '../recommend.js';
+import { defaultShop, GENDER_LABEL, uid } from '../state.js';
 import { download, html, num, raw, toast, won } from '../ui.js';
+
+const options = (labels, value) =>
+  Object.entries(labels).map(([k, label]) => html`<option value="${k}" ${String(k) === String(value) ? raw('selected') : ''}>${label}</option>`);
+
+function shopPanel(settings) {
+  const s = { ...defaultShop(), ...(settings.shop ?? {}) };
+  const percent = (v) => Math.round((Number(v) || 0) * 100);
+  return html`
+  <section class="panel" id="shop-diagnosis">
+    <h2>매장 진단 <span class="badge">이번 달 추천에 사용</span></h2>
+    <p class="help">방문 기록에는 없는 매장 정보입니다. 상권·가격대·예약 여유에 따라 추천 프로모션과 할인 수준이 달라집니다. 정확하지 않아도 괜찮으니 대략 입력하세요.</p>
+    ${s.configured ? '' : html`<p class="alert caution">아직 입력하지 않아 기본값으로 추천하고 있습니다.</p>`}
+    <form id="st-shop" class="form-grid">
+      <label class="field">상권 <select name="tradeArea">${options(TRADE_AREA_LABEL, s.tradeArea)}</select></label>
+      <label class="field">가격대 <select name="pricePosition">${options(PRICE_POSITION_LABEL, s.pricePosition)}</select>
+        <span class="hint">주변 왁싱샵과 비교한 우리 가격</span></label>
+      <label class="field">개업 연월 <input name="openedOn" type="month" value="${s.openedOn}" placeholder="2026-03"></label>
+      <label class="field">일하는 사람 수 <input name="staffCount" type="number" min="1" max="20" value="${s.staffCount}" required></label>
+      <label class="field">한 달 최대 시술 건수 <input name="capacityPerMonth" type="number" min="1" step="1" value="${s.capacityPerMonth}" required>
+        <span class="hint">모든 예약이 찼을 때 받을 수 있는 건수</span></label>
+      <label class="field">요즘 예약률(%) <input name="utilization" type="number" min="0" max="100" value="${percent(s.utilization)}" required></label>
+      <label class="field">자주 비는 시간 비율(%) <input name="offPeakSlack" type="number" min="0" max="100" value="${percent(s.offPeakSlack)}" required>
+        <span class="hint">평일 낮처럼 잘 안 차는 시간이 전체 영업시간에서 차지하는 비율</span></label>
+      <label class="field">반경 500m 왁싱샵 수 <input name="competitorDensity" type="number" min="0" max="100" value="${s.competitorDensity}" required></label>
+      <label class="field">주변의 첫 방문 할인 경쟁 <select name="competitorDiscountIntensity">${options(Object.fromEntries(COMPETITION_LABEL.map((l, i) => [i, l])), s.competitorDiscountIntensity)}</select></label>
+      <label class="field">온라인 후기 수 <input name="reviewCount" type="number" min="0" value="${s.reviewCount}" required></label>
+      <label class="field">평점(5점 만점) <input name="rating" type="number" min="0" max="5" step="0.1" value="${s.rating}" required></label>
+      <label class="field">월 프로모션 예산(원) <input name="monthlyPromoBudget" type="number" min="0" step="1000" value="${s.monthlyPromoBudget}" required>
+        <span class="hint">할인·선물 등에 한 달 동안 쓸 수 있는 금액</span></label>
+      <label class="field">아직 안 쓴 선불 잔액(원) <input name="prepaidOutstanding" type="number" min="0" step="any" value="${s.prepaidOutstanding}">
+        <span class="hint">회수권·정액권으로 받았지만 아직 시술하지 않은 금액</span></label>
+      <label class="field check"><input type="checkbox" name="hasOnlineBooking" ${s.hasOnlineBooking ? raw('checked') : ''}> 온라인 예약을 받고 있음</label>
+      <div class="btn-row end span-all"><button class="btn btn-primary" type="submit">매장 진단 저장</button></div>
+    </form>
+  </section>`;
+}
 
 export const title = '매장 설정';
 
@@ -28,6 +65,8 @@ export function render(app) {
       <div class="btn-row end span-all"><button class="btn btn-primary" type="submit">저장</button></div>
     </form>
   </section>
+
+  ${shopPanel(settings)}
 
   <section class="panel">
     <h2>시술 메뉴</h2>
@@ -81,6 +120,33 @@ export function bind(root, app) {
     app.save();
     app.resetViews();
     toast('저장했습니다.');
+    app.rerender();
+  });
+
+  root.querySelector('#st-shop').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const num0 = (k, lo, hi) => Math.min(hi, Math.max(lo, Number(f.get(k)) || 0));
+    settings.shop = {
+      ...defaultShop(),
+      configured: true,
+      tradeArea: String(f.get('tradeArea')),
+      pricePosition: String(f.get('pricePosition')),
+      openedOn: /^\d{4}-\d{2}$/.test(String(f.get('openedOn'))) ? String(f.get('openedOn')) : '',
+      staffCount: num0('staffCount', 1, 20),
+      capacityPerMonth: num0('capacityPerMonth', 1, 100000),
+      utilization: num0('utilization', 0, 100) / 100,
+      offPeakSlack: num0('offPeakSlack', 0, 100) / 100,
+      competitorDensity: num0('competitorDensity', 0, 100),
+      competitorDiscountIntensity: num0('competitorDiscountIntensity', 0, 3),
+      reviewCount: num0('reviewCount', 0, 1e6),
+      rating: num0('rating', 0, 5),
+      monthlyPromoBudget: num0('monthlyPromoBudget', 0, 1e9),
+      prepaidOutstanding: num0('prepaidOutstanding', 0, 1e10),
+      hasOnlineBooking: f.get('hasOnlineBooking') === 'on',
+    };
+    app.save();
+    toast('매장 진단을 저장했습니다. ‘이번 달 추천’에 바로 반영됩니다.');
     app.rerender();
   });
 

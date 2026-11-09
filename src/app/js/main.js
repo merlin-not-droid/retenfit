@@ -1,17 +1,21 @@
 // WAXFIT 앱 뼈대: 화면 전환(#/경로), 저장, 공용 계산 도우미
+import { checkAccess, syncOncePerDay } from './account.js';
 import { analyze } from './analytics.js';
 import { diffDays, today } from './dates.js';
+import { buildRecommendation } from './recommend.js';
 import { sampleState } from './sample.js';
 import { defaultState, loadState, menuItem, saveState } from './state.js';
 import { html, toast } from './ui.js';
 import * as acquisition from './views/acquisition.js';
 import * as analyticsView from './views/analytics.js';
 import * as customers from './views/customers.js';
+import * as experimentsView from './views/experiments.js';
+import * as recommendView from './views/recommend.js';
 import * as retention from './views/retention.js';
 import * as settingsView from './views/settings.js';
 
-const ROUTES = { acquisition, retention, analytics: analyticsView, customers, settings: settingsView };
-const DEFAULT_ROUTE = 'acquisition';
+const ROUTES = { recommend: recommendView, acquisition, retention, analytics: analyticsView, experiments: experimentsView, customers, settings: settingsView };
+const DEFAULT_ROUTE = 'recommend';
 const MIN_COMPLETED = 20; // 실제 재방문율을 쓰려면 관찰 완료 손님이 이만큼은 있어야 함
 
 const loaded = loadState();
@@ -40,8 +44,15 @@ const app = {
     if (r.totals.completed >= MIN_COMPLETED) return { rate: r.totals.rate, completed: r.totals.completed, source: 'data' };
     return { rate: settings.assumedRevisitRate, completed: r.totals.completed, source: 'assumed' };
   },
+  /** 이번 달 추천(매장 진단 + 방문 기록 → promo-engine). 저장할 때마다 다시 계산 */
+  recommendation() {
+    if (!recommendationCache || recommendationCache.state !== app.state || recommendationCache.version !== dataVersion) {
+      recommendationCache = { state: app.state, version: dataVersion, value: buildRecommendation(app.state, app.today) };
+    }
+    return recommendationCache.value;
+  },
   clearData() {
-    Object.assign(app.state, { customers: [], visits: [], plans: [] });
+    Object.assign(app.state, { customers: [], visits: [], plans: [], experiments: [] });
     app.state.meta.demo = false;
     app.save();
   },
@@ -61,8 +72,11 @@ const app = {
     analyticsView.reset?.();
   },
 };
+let dataVersion = 0;
+let recommendationCache = null;
 function reindex() {
   genderIndex = new Map(app.state.customers.map((c) => [c.id, c.gender]));
+  dataVersion += 1; // 저장·다시 읽기 때마다 추천을 새로 계산
 }
 reindex();
 
@@ -102,7 +116,23 @@ function focusKey(el) {
   return null;
 }
 
+let gate = null; // 구독 확인 결과(결제 서버가 연결된 경우에만)
+
+/** 구독 전에는 앱 대신 결제 안내 */
+function renderGate() {
+  const checkout = new URL('../checkout/', location.href).href;
+  document.querySelector('.app-tabs')?.setAttribute('hidden', '');
+  document.getElementById('banner').innerHTML = '';
+  document.getElementById('view').innerHTML = String(html`<section class="panel intro">
+    <h1>구독 후 이용할 수 있습니다</h1>
+    <p class="help">${gate.reason === 'login' ? '카카오로 로그인하면 구독 상태를 확인합니다.' : '첫 3개월 월 4,900원, 4개월째부터 월 8,900원(부가세 포함)이며 언제든 해지할 수 있습니다.'}</p>
+    <div class="btn-row"><a class="btn btn-primary" href="${checkout}">${gate.reason === 'login' ? '카카오로 로그인' : '구독 시작하기'}</a></div>
+  </section>`);
+  document.title = '구독 안내 | WAXFIT 앱';
+}
+
 function render() {
+  if (gate && !gate.ok) return renderGate();
   const route = /^#\/(\w+)/.exec(location.hash)?.[1];
   const key = ROUTES[route] ? route : DEFAULT_ROUTE;
   const view = ROUTES[key];
@@ -152,4 +182,15 @@ window.addEventListener('storage', (e) => {
     render();
   }
 });
-render();
+
+/** 결제 서버가 연결돼 있으면 구독을 확인한 뒤 화면을 그림. 서버 오류로 매장 기록을 못 쓰게 막지는 않음 */
+async function start() {
+  try {
+    gate = await checkAccess();
+  } catch {
+    gate = { ok: true };
+  }
+  render();
+  if (gate.ok) syncOncePerDay(app).catch(() => {});
+}
+start();

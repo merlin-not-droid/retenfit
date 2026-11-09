@@ -8,7 +8,8 @@
 //  2. HTML의 <!-- @include _partials/header.html --> 를 해당 파일 내용으로 교체
 //  3. 페이지마다 검색 노출용 태그를 채움 (scripts/lib/seo.mjs)
 //  4. sitemap.xml · robots.txt · 404.html · IndexNow 키 파일 생성
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ConfigError, loadConfig, makeSite } from './lib/config.mjs';
@@ -92,7 +93,8 @@ export async function build(options = {}) {
   const site = makeSite(siteUrl);
   if (!existsSync(srcDir)) throw new ConfigError(`원본 폴더가 없습니다: ${srcDir}`);
 
-  rmSync(outDir, { recursive: true, force: true });
+  // fs.rmSync(…, { recursive: true })는 Node 24(Windows)에서 한글 등 비ASCII 경로를 만나면 프로세스가 강제 종료되어 비동기 rm을 씁니다
+  await rm(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
 
   const files = walk(srcDir);
