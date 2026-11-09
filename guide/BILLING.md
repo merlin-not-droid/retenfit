@@ -1,6 +1,6 @@
 # 구독 결제 · 카카오 로그인 · 운영자 분석 — 설정 안내
 
-랜딩페이지 → **결제 페이지(카카오 로그인 → 카드 등록·첫 달 결제)** → 앱, 그리고 운영자만 보는 **운영자 분석**으로 이어집니다.
+처음 화면 → 업종별 소개(`/salon/`, `/wax/`) → **결제 페이지(카카오 로그인 → 카드 등록·첫 달 결제)** → 업종별 대시보드, 그리고 운영자만 보는 **운영자 분석**으로 이어집니다. 요금은 두 업종이 같습니다.
 
 | 항목 | 값 |
 |---|---|
@@ -14,17 +14,18 @@
 
 ```
 GitHub Pages(정적)                         Supabase(서울 리전 권장)
-  /           랜딩: 결제 페이지로 안내
+  /           처음 화면: 업종 고르기
+  /salon/ /wax/  업종별 소개: 결제 페이지로 안내(?service=salon|wax)
   /checkout/  카카오 로그인 ─────────────▶ Auth(카카오 공급자)
               카드 등록(PortOne 결제창) → 빌링키
               가입 요청 ─────────────────▶ Edge Function billing: 첫 달 결제·단건 조회로 확인·구독 저장
-  /app/       구독 확인 후 앱 열기, 하루 한 번 매장 집계 숫자 ─▶ store_metrics (손님 개인정보 없음)
+  /salon/app/ /wax/app/  구독 확인 후 대시보드 열기, 하루 한 번 매장 집계 숫자 ─▶ store_metrics (손님 개인정보 없음, 업종은 data.service)
   /admin/     운영자 분석 ───────────────▶ 테이블 조회(행 단위 보안: admins에 있는 계정만 전체 행)
                                             Edge Function renew: 매일(pg_cron) 결제일이 된 구독 결제
                                             Edge Function portone-webhook: 콘솔 취소·환불 반영
 ```
 
-결제 규칙은 `supabase/functions/_shared/billing-core.js` 한 파일입니다(브라우저용 복사본 `src/assets/js/billing-core.js`는 테스트가 같은지 확인). 요청 처리(`billing-handler.js`)도 운영 서버와 로컬 테스트 서버가 같은 코드를 씁니다.
+결제 규칙은 `supabase/functions/_shared/billing-core.js` 한 파일입니다(브라우저용 복사본 `src/assets/js/billing-core.js`는 테스트가 같은지 확인). 이 파일을 고치면(요금제 이름 포함) 서버 함수를 다시 배포해야 반영됩니다. 요청 처리(`billing-handler.js`)도 운영 서버와 로컬 테스트 서버가 같은 코드를 씁니다.
 
 ## 0. 먼저 로컬에서 흐름 보기 (계정 불필요)
 
@@ -134,6 +135,8 @@ insert into public.admins (user_id) select id from auth.users where email = '운
 
 ## 8. 열기 전 확인
 
+- [ ] 서버 함수 다시 배포(5번): 결제 내역에 찍히는 요금제 이름이 ‘리텐핏 매장 요금제’로 바뀝니다
+- [ ] 카카오 앱 이름과 동의 화면 문구를 리텐핏으로 변경
 - [ ] 테스트 채널로 가입 → 첫 결제 → 해지 → 해지 취소, `renew` 수동 호출로 다음 회차 결제 확인
 - [ ] PortOne 콘솔에서 결제 취소 → 웹훅으로 결제 상태가 바뀌는지 확인
 - [ ] `src/legal/index.html`에 사업자 정보·개인정보 보호책임자·서버 위치 기재, 약관·환불 기준 확정

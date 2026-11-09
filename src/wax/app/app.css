@@ -1,0 +1,455 @@
+/* 왁싱샵 대시보드 전용 부품. 공통 뼈대와 표·입력은 /assets/dash.css */
+
+/* 성별 선택 */
+.seg {
+  display: inline-flex;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  overflow: hidden;
+}
+
+.seg label {
+  position: relative;
+}
+
+.seg label + label {
+  border-left: 1px solid var(--line-strong);
+}
+
+.seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seg span {
+  display: block;
+  padding: 7px 14px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.seg input:checked + span {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.seg input:focus-visible + span {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.facts {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.facts b {
+  color: var(--text);
+}
+
+.file-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.file-btn:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 프로모션 목록 */
+.promo-list {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.promo {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px 10px 40px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+}
+
+.promo:hover {
+  background: color-mix(in srgb, var(--secondary) 45%, transparent);
+}
+
+.promo input {
+  position: absolute;
+  left: 12px;
+  top: 13px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.promo.active {
+  background: var(--secondary);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.promo-name {
+  font-weight: 650;
+}
+
+.promo-name .badge {
+  margin-left: var(--s2);
+}
+
+.promo-range {
+  color: var(--primary);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+/* 할인 스펙트럼 */
+.spectrum {
+  position: relative;
+  height: 36px;
+  margin-top: var(--s2);
+}
+
+.spectrum-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 12px;
+  border: 1px solid var(--line-strong);
+}
+
+.spectrum input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.spectrum input[type="range"]::-webkit-slider-runnable-track {
+  height: 36px;
+  background: transparent;
+}
+
+.spectrum input[type="range"]::-moz-range-track {
+  height: 36px;
+  background: transparent;
+}
+
+.spectrum input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 28px;
+  margin-top: 4px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  background: var(--primary);
+}
+
+.spectrum input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 26px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  background: var(--primary);
+}
+
+.spectrum input[type="range"]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.rec-marker {
+  position: absolute;
+  top: 2px;
+  width: 2px;
+  height: 32px;
+  margin-left: -1px;
+  background: var(--primary);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.rec-marker::after {
+  content: "추천";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--primary);
+  font-size: var(--fs-label);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.spectrum-scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-2);
+  font-size: var(--fs-label);
+}
+
+.plain-range {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.rate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin: var(--s2) 0 var(--s1);
+}
+
+.rate-out {
+  color: var(--primary);
+  font-size: 24px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.field .rate-out {
+  font-size: 16px;
+}
+
+.rec-note {
+  margin: 0 0 var(--s3);
+  color: var(--text-2);
+  font-size: var(--fs-small);
+}
+
+.assume {
+  margin: var(--s2) 0 var(--s4);
+  font-size: 14px;
+}
+
+.assume summary {
+  color: var(--text-2);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.assume p {
+  color: var(--text-2);
+}
+
+.save-plan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+
+.save-plan .field {
+  flex: 1 1 220px;
+}
+
+.plan-list {
+  display: grid;
+  margin: 0 0 var(--s2);
+  padding: 0;
+  list-style: none;
+}
+
+.plan-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.menu-table td {
+  padding: 6px 8px;
+}
+
+.menu-table input,
+.menu-table select {
+  min-width: 90px;
+}
+
+.status.scheduled {
+  background: var(--secondary);
+  color: var(--text-2);
+}
+
+.empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+/* 차트 */
+.chart {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin: var(--s2) 0 var(--s4);
+}
+
+.chart text {
+  font-family: var(--font);
+}
+
+.method ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.method li + li {
+  margin-top: var(--s1);
+}
+
+.visit-history {
+  margin-top: var(--s5);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+
+.visit-history ul {
+  display: grid;
+  gap: 2px;
+  max-height: 240px;
+  margin: 0 0 var(--s3);
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.visit-history li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.issues {
+  margin: var(--s3) 0;
+  font-size: 14px;
+}
+
+.issues summary {
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.issues.error summary {
+  color: var(--bad);
+}
+
+.issues.warn summary {
+  color: var(--warn);
+}
+
+.issues ul {
+  max-height: 220px;
+  margin: var(--s2) 0 0;
+  padding-left: 18px;
+  overflow: auto;
+}
+
+.ai-note {
+  margin: var(--s3) 0 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--primary);
+  background: var(--surface);
+  font-size: 14px;
+}
+
+/* 효과 실험 */
+.design-list {
+  margin: var(--s2) 0 0;
+  padding-left: 18px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.exp-list {
+  display: grid;
+}
+
+.exp-card {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s4) 0;
+  border-top: 1px solid var(--line);
+}
+
+.exp-card:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.exp-card > * {
+  margin: 0;
+}
+
+.exp-head h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.xp-table th[scope="row"] {
+  text-align: left;
+}
+
+.xp-table td,
+.xp-table thead th {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.xp-effect .sub {
+  margin-left: 6px;
+  color: var(--text-2);
+  font-size: var(--fs-small);
+}
+
+.arm {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  padding: 1px 7px;
+  border-radius: var(--r-tag);
+  font-size: var(--fs-label);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.arm.treat {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.arm.control {
+  background: var(--secondary);
+  color: var(--text-2);
+}
+
+.xp-lookup {
+  display: block;
+  min-height: 1.5em;
+  font-size: 14px;
+}

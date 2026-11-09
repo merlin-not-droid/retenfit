@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { addDays } from '../src/app/js/dates.js';
+import { addDays } from '../src/wax/app/js/dates.js';
 import {
   armOf, campaignResults, designOf, experimentResult, newExperiment, recordMessageExposures, switchbackWeek,
-} from '../src/app/js/experiments.js';
-import { CATALOG_BY_ID } from '../src/app/js/promo-engine/index.js';
-import { buildRecommendation, learningFor } from '../src/app/js/recommend.js';
-import { sampleState } from '../src/app/js/sample.js';
-import { defaultState } from '../src/app/js/state.js';
-import { render } from '../src/app/js/views/experiments.js';
+} from '../src/wax/app/js/experiments.js';
+import { CATALOG_BY_ID } from '../src/assets/js/promo-engine/index.js';
+import { buildRecommendation, learningFor } from '../src/wax/app/js/recommend.js';
+import { sampleState } from '../src/wax/app/js/sample.js';
+import { defaultState } from '../src/wax/app/js/state.js';
+import { render } from '../src/wax/app/js/views/experiments.js';
 
 const plan = (promotionId, kind = 'retention', rate = 0.1) => ({ id: `p_${promotionId}`, kind, name: `${promotionId} 테스트`, promotionId, rate });
 const visit = (customerId, date) => ({ customerId, date, service: '브라질리언', listPrice: 70000, paid: 70000, promotion: '' });
@@ -95,10 +95,10 @@ test('실험 결과 → 추천 엔진 입력: 장치·강도·집계값', () => 
   const exp = newExperiment(plan('second-visit', 'retention', 0.1), { id: 'x_cr', startDate: '2026-06-01', controlShare: 0.5, settings: { windowDays: 30 } });
   state.experiments.push(exp);
   for (let i = 0; i < 30; i += 1) state.visits.push(visit(`K${i}`, addDays('2026-06-01', i)));
-  const store = { id: 'waxfit-local', avgTicket: 60000 };
+  const store = { id: 'wax-local', avgTicket: 60000 };
   const [r] = campaignResults(state, '2026-09-01', store);
   assert.equal(r.promotionId, 'next_visit_coupon');
-  assert.equal(r.storeId, 'waxfit-local');
+  assert.equal(r.storeId, 'wax-local');
   assert.equal(r.level, 6000); // 할인 10% × 객단가 6만원 → 6,000원 쿠폰
   assert.equal(r.treated + r.control, 30);
 });

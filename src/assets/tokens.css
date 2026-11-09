@@ -1,28 +1,122 @@
-/* WAXFIT 디자인 토큰 — 베이지·누드 기본, 네이비 포인트 */
+/* RETENFIT 디자인 토큰
+   브랜드 색 한 벌에서 화면별 테마가 갈라집니다.
+     기본(마케팅)  : 베이지·누드·브라운 + 금색 테두리
+     data-service="salon" : 미용실 #214E42 · #E8EEE6 · #DCF1B4 · #F5F6F2
+     data-service="wax"   : 왁싱샵 베이지·누드 + 네이비 포인트
+     data-surface="admin" : 운영자 오프화이트·네이비
+   컴포넌트는 --primary 같은 역할 이름만 씁니다. 색을 직접 쓰지 않습니다. */
 :root {
-  --bg: #f7f2ec;
-  --bg-deep: #efe5da;
-  --surface: #fffcf8;
+  /* 브랜드 원색 */
+  --espresso: #2b2019;
+  --walnut: #4b3829;
+  --clay: #8a6a53;
   --nude: #e3cbb8;
-  --nude-deep: #c9a68e;
-  --ink: #2a2420;
-  --muted: #6b5e55;
-  --line: #e4d8cc;
-  --navy: #1e2a47;
-  --navy-hover: #2c3b63;
-  --on-navy: #ffffff;
+  --beige: #f2e8dd;
+  --paper: #fbf7f1;
+  --gold: #b08d57;
+  --gold-light: #d8bf93;
+  --navy-brand: #1e2a47;
+  --green-brand: #214e42;
+  --lime-brand: #dcf1b4;
+
+  /* 역할: Primary · Secondary · Accent · Background · Surface · Text */
+  --primary: var(--espresso);
+  --primary-hover: var(--walnut);
+  --on-primary: #fbf7f1;
+  --secondary: var(--beige);
+  --accent: var(--nude);
+  --on-accent: var(--espresso);
+  --bg: var(--paper);
+  --surface: #fffdfa;
+  --text: #2a2420;
+  --text-2: #655548;
+  --line: #e6d9cc;
+  --line-strong: #c4ae99;
+  --focus: #8a6a53;
+
+  /* 상태 */
   --ok: #2f6f4f;
   --ok-bg: #e3efe6;
   --warn: #85560f;
   --warn-bg: #f6ead3;
   --bad: #a23b32;
   --bad-bg: #f6e1dd;
-  --radius: 14px;
-  --radius-sm: 10px;
-  --shadow: 0 1px 2px rgba(42, 36, 32, 0.06), 0 10px 30px rgba(42, 36, 32, 0.07);
-  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-    "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
+
+  /* 글자: 역할별로 크기·굵기·행간을 함께 정합니다 */
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
+  --fs-display: clamp(30px, 3.1vw, 42px);
+  --fs-title: clamp(22px, 2vw, 26px);
+  --fs-section: 18px;
+  --fs-body: 15px;
+  --fs-small: 13px;
+  --fs-label: 12px;
+
+  /* 간격 */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 72px;
+
+  /* 모서리: 역할마다 다릅니다. 입력·버튼은 작게, 면은 거의 각지게, 상태 표시는 태그처럼 */
+  --r-control: 6px;
+  --r-panel: 8px;
+  --r-tag: 3px;
+
   color-scheme: light;
+}
+
+html[data-service="salon"] {
+  --primary: #214e42;
+  --primary-hover: #183c33;
+  --on-primary: #ffffff;
+  --secondary: #e8eee6;
+  --accent: #dcf1b4;
+  --on-accent: #183c33;
+  --bg: #f5f6f2;
+  --surface: #ffffff;
+  --text: #263b36;
+  --text-2: #55655c;
+  --line: #e0e5db;
+  --line-strong: #bcc7b6;
+  --focus: #214e42;
+  --warn: #9a5a30;
+  --warn-bg: #fbeee3;
+}
+
+html[data-service="wax"] {
+  --primary: #1e2a47;
+  --primary-hover: #2c3b63;
+  --on-primary: #ffffff;
+  --secondary: #efe5da;
+  --accent: #e3cbb8;
+  --on-accent: #1e2a47;
+  --bg: #f7f2ec;
+  --surface: #fffcf8;
+  --text: #2a2420;
+  --text-2: #655548;
+  --line: #e4d8cc;
+  --line-strong: #c9a68e;
+  --focus: #1e2a47;
+}
+
+html[data-surface="admin"] {
+  --primary: #1e2a47;
+  --primary-hover: #2c3b63;
+  --on-primary: #ffffff;
+  --secondary: #eceef3;
+  --accent: #dfe3ee;
+  --on-accent: #1e2a47;
+  --bg: #f8f8f4;
+  --surface: #ffffff;
+  --text: #1f2533;
+  --text-2: #565d6e;
+  --line: #e3e4de;
+  --line-strong: #c2c5cd;
+  --focus: #1e2a47;
 }
 
 *,
@@ -39,68 +133,57 @@ html {
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--ink);
+  color: var(--text);
   font-family: var(--font);
-  font-size: 16px;
+  font-size: var(--fs-body);
   line-height: 1.65;
   word-break: keep-all;
   overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
 }
 
-img,
-svg {
+h1, h2, h3, p, ul, ol, dl, dd, figure {
+  margin: 0;
+}
+
+h1, h2, h3 {
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+img, svg {
   display: block;
   max-width: 100%;
 }
 
 a {
-  color: var(--navy);
+  color: var(--primary);
+  text-underline-offset: 3px;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
 }
 
 :focus-visible {
-  outline: 3px solid var(--navy);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
-  border-radius: 6px;
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 20px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font: inherit;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+[hidden] {
+  display: none !important;
 }
 
-.btn:active {
-  transform: translateY(1px);
+small {
+  font-size: var(--fs-label);
 }
 
-.btn-primary {
-  background: var(--navy);
-  color: var(--on-navy);
-}
-
-.btn-primary:hover {
-  background: var(--navy-hover);
-}
-
-.btn-line {
-  background: transparent;
-  border-color: var(--nude-deep);
-  color: var(--ink);
-}
-
-.btn-line:hover {
-  background: var(--surface);
-  border-color: var(--navy);
+.num,
+td,
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 .sr-only {
@@ -114,6 +197,166 @@ a {
   white-space: nowrap;
   border: 0;
 }
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -80px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--r-control);
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* 버튼: 핵심 동작은 하나만 primary. 보조는 line, 부가 동작은 quiet */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
+  background: transparent;
+  font-weight: 650;
+  font-size: var(--fs-body);
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.btn-primary,
+.btn.primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover:not(:disabled),
+.btn.primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-line,
+.btn.secondary {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn-line:hover:not(:disabled),
+.btn.secondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-ghost {
+  color: var(--text-2);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--secondary);
+  color: var(--text);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: var(--fs-small);
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background: var(--secondary);
+  border-color: transparent;
+  color: var(--text-2);
+  cursor: not-allowed;
+}
+
+.btn[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.btn.danger {
+  color: var(--bad);
+}
+
+.btn-danger {
+  background: var(--bad);
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #8a2f27;
+}
+
+/* 확인 창: 되돌리기 어려운 동작 전에 묻습니다 */
+.confirm-dialog {
+  width: min(440px, 100% - 32px);
+  padding: var(--s5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(30, 28, 24, 0.5);
+}
+
+.confirm-text {
+  white-space: pre-line;
+}
+
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s2);
+  margin-top: var(--s5);
+}
+
+.link-btn {
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* 로딩 자리표시 */
+.skeleton {
+  display: block;
+  height: 14px;
+  margin: 8px 0;
+  border-radius: var(--r-tag);
+  background: var(--secondary);
+}
+
+.skeleton.w60 { width: 60%; }
+.skeleton.w80 { width: 80%; }
 
 @media (prefers-reduced-motion: reduce) {
   * {

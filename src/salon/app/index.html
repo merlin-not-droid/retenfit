@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko" data-service="salon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>리텐핏 미용실 대시보드</title>
+  <meta name="description" content="미용실 원장님을 위한 리텐핏 대시보드입니다. 이번 달 추천, 재방문 현황, 고객 목록, 프로모션 손익, 매출을 봅니다.">
+  <!-- 고객 기록을 다루는 앱 화면이라 검색 결과에는 내보내지 않습니다 (sitemap에서도 자동 제외) -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#183c33">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/assets/tokens.css">
+  <link rel="stylesheet" href="/assets/dash.css">
+  <link rel="stylesheet" href="/salon/app/salon.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+  <div id="app"><main class="dash-main" id="content"><p class="muted">대시보드를 불러오는 중입니다.</p><span class="skeleton w80"></span><span class="skeleton w60"></span></main></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="guide"></dialog>
+  <noscript><p class="banner bad">이 화면은 자바스크립트를 켜야 쓸 수 있습니다.</p></noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

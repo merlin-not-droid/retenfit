@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { analyze, NO_PROMOTION, wilson } from '../src/app/js/analytics.js';
-import { csvCell, parseAmount, parseCsv, toCsv } from '../src/app/js/csv.js';
-import { addDays, diffDays, parseDate } from '../src/app/js/dates.js';
+import { analyze, NO_PROMOTION, wilson } from '../src/wax/app/js/analytics.js';
+import { csvCell, parseAmount, parseCsv, toCsv } from '../src/wax/app/js/csv.js';
+import { addDays, diffDays, parseDate } from '../src/wax/app/js/dates.js';
 import {
   discountLimits,
   evaluateAcquisition,
@@ -10,11 +10,11 @@ import {
   recommendDiscount,
   spectrumZones,
   visitEconomics,
-} from '../src/app/js/economics.js';
-import { ACQUISITION } from '../src/app/js/catalog.js';
-import { exportVisitsCsv, importVisitsCsv, templateCsv } from '../src/app/js/records.js';
-import { sampleState } from '../src/app/js/sample.js';
-import { defaultState, mergeImported, nextCustomerId, nextVisitInfo } from '../src/app/js/state.js';
+} from '../src/wax/app/js/economics.js';
+import { ACQUISITION } from '../src/wax/app/js/catalog.js';
+import { exportVisitsCsv, importVisitsCsv, templateCsv } from '../src/wax/app/js/records.js';
+import { sampleState } from '../src/wax/app/js/sample.js';
+import { defaultState, mergeImported, nextCustomerId, nextVisitInfo } from '../src/wax/app/js/state.js';
 
 const near = (a, b, eps = 1e-9) => assert.ok(Math.abs(a - b) < eps, `${a} ≈ ${b}`);
 

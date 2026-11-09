@@ -1,30 +1,36 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-surface="admin">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAXFIT 운영자 분석</title>
-  <meta name="description" content="WAXFIT 운영자 전용 화면입니다. 운영자로 등록된 카카오 계정만 구독·결제·매장 지표를 볼 수 있습니다.">
+  <title>리텐핏 운영자 분석</title>
+  <meta name="description" content="리텐핏 운영자 전용 화면입니다. 운영자로 등록된 카카오 계정만 구독·결제·매장 지표를 볼 수 있습니다.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="/assets/tokens.css">
-  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/dash.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="/" aria-label="WAXFIT 홈">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#1e2a47"/><path d="M11 15l5.2 18L21 20.5 25.8 33 31 15" fill="none" stroke="#e3cbb8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36.5" cy="31.5" r="3" fill="#e3cbb8"/></svg>
-        <span>WAXFIT <small>운영자</small></span>
+  <a class="skip-link" href="#admin">본문으로 건너뛰기</a>
+  <div class="dash">
+    <aside class="dash-side">
+      <a class="dash-brand" href="/" aria-label="리텐핏 처음 화면으로">
+        <!-- @include _partials/mark.html -->
+        <span>리텐핏<small>운영자</small></span>
       </a>
+      <nav class="dash-nav" aria-label="이 화면">
+        <a href="#admin" aria-current="page">운영자 분석</a>
+      </nav>
+      <div class="dash-side-foot">운영자로 등록된 계정만 데이터를 받습니다.</div>
+    </aside>
+    <div class="dash-body">
+      <header class="dash-top"><h1 class="dash-top-title">운영자 분석</h1><span class="muted">구독 · 결제 · 체험가 전환 · 매장 지표</span></header>
+      <main class="dash-main">
+        <div id="admin"><p class="muted">불러오는 중입니다.</p><span class="skeleton w80"></span><span class="skeleton w60"></span></div>
+      </main>
     </div>
-  </header>
-  <main class="page-wide">
-    <h1>운영자 분석</h1>
-    <p class="muted">구독·결제·체험가 전환·매장 지표를 봅니다. 운영자로 등록된 계정만 데이터를 받을 수 있습니다(서버의 행 단위 보안).</p>
-    <div id="admin"><p class="muted">불러오는 중…</p></div>
-  </main>
+  </div>
   <script type="module" src="/assets/js/admin.js"></script>
 </body>
 </html>

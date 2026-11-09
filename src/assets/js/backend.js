@@ -121,7 +121,7 @@ async function supabaseBackend() {
         storeId: config.portone.storeId,
         channelKey: config.portone.channelKey,
         billingKeyMethod: 'CARD',
-        issueName: 'WAXFIT 매장 요금제 정기결제',
+        issueName: '리텐핏 매장 요금제 정기결제',
         customer: {
           customerId: user.id,
           fullName: customer?.name || undefined,

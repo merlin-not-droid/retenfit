@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { ACQUISITION, RETENTION } from '../src/app/js/catalog.js';
-import { CATALOG_BY_ID, WAXFIT_TO_ENGINE } from '../src/app/js/promo-engine/index.js';
-import { buildRecommendation, monthsSince, promotionMessage, rankOptions, shopContext } from '../src/app/js/recommend.js';
-import { sampleState } from '../src/app/js/sample.js';
-import { defaultShop, defaultState } from '../src/app/js/state.js';
-import { render } from '../src/app/js/views/recommend.js';
+import { ACQUISITION, RETENTION } from '../src/wax/app/js/catalog.js';
+import { CATALOG_BY_ID, WAX_TO_ENGINE } from '../src/assets/js/promo-engine/index.js';
+import { buildRecommendation, monthsSince, promotionMessage, rankOptions, shopContext } from '../src/wax/app/js/recommend.js';
+import { sampleState } from '../src/wax/app/js/sample.js';
+import { defaultShop, defaultState } from '../src/wax/app/js/state.js';
+import { render } from '../src/wax/app/js/views/recommend.js';
 
 const asOf = '2026-11-05';
 const planIds = (r) => r.plan.selected.map((e) => e.device.id).sort().join(',');
 
-test('왁스핏 프로모션 10종이 모두 추천 엔진 장치와 연결된다', () => {
+test('왁싱샵 프로모션 10종이 모두 추천 엔진 장치와 연결된다', () => {
   for (const p of [...ACQUISITION, ...RETENTION]) {
-    const id = WAXFIT_TO_ENGINE[p.id];
+    const id = WAX_TO_ENGINE[p.id];
     assert.ok(id && CATALOG_BY_ID[id], `${p.id} → 엔진 장치 없음`);
   }
 });
@@ -28,7 +28,7 @@ test('매장 진단 → 엔진 입력: 개업 개월 수·범위 보정', () => 
   assert.equal(shopContext({}, asOf).tradeArea, 'residential');
 });
 
-test('샘플 데이터로 이번 달 추천: 플랜·왁스핏 옵션 순위·안내 문구', () => {
+test('샘플 데이터로 이번 달 추천: 플랜·왁싱샵 옵션 순위·안내 문구', () => {
   const r = buildRecommendation(sampleState(asOf), asOf);
   assert.ok(r.configured && r.dataReady);
   assert.ok(r.plan.selected.length >= 1 && r.plan.selected.length <= 3, '2인 매장은 동시 운영 3개 이하');
@@ -72,7 +72,7 @@ test('기록이 없는 새 매장도 오류 없이 기본값으로 추천하고 
 test('이번 달 추천 화면: 목적 비중·장벽·실행 플랜이 그려진다', () => {
   const r = buildRecommendation(sampleState(asOf), asOf);
   const out = String(render({ recommendation: () => r }));
-  for (const text of ['이번 달 실행 플랜', '어디서 이익이 새나요', '손님을 막는 심리 장벽', '목적별 다른 선택지', '왜 이 프로모션인가요?']) assert.ok(out.includes(text), text);
+  for (const text of ['이번 달 실행 플랜', '어디서 이익이 새나요', '손님을 막는 심리 장벽', '목적별 다른 선택지', '왜 우리 매장에 이 추천인가요?', '이번 달 달라진 점']) assert.ok(out.includes(text), text);
   assert.equal((out.match(/<h1>/g) ?? []).length, 1);
   assert.ok(!out.includes('undefined') && !out.includes('NaN'));
 });

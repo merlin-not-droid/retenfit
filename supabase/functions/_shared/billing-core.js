@@ -6,7 +6,7 @@
 //   날짜 : 한국 시간 기준 'YYYY-MM-DD'
 
 export const PRICING = Object.freeze({
-  planName: 'WAXFIT 매장 요금제',
+  planName: '리텐핏 매장 요금제',
   introMonths: 3,
   introPrice: 4900,
   regularPrice: 8900,

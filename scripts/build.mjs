@@ -2,7 +2,7 @@
 // 사이트 빌드: src/ → dist/
 //
 //   npm run build
-//   SITE_URL=https://waxfit.kr/ npm run build   (주소를 직접 지정할 때)
+//   SITE_URL=https://retenfit.kr/ npm run build   (주소를 직접 지정할 때)
 //
 //  1. src/의 파일을 dist/로 복사 ('_'·'.'으로 시작하는 파일·폴더는 제외)
 //  2. HTML의 <!-- @include _partials/header.html --> 를 해당 파일 내용으로 교체

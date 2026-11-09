@@ -1,5 +1,6 @@
-// 결제 페이지: 요금 일정 → 카카오 로그인 → 동의·카드 등록·첫 달 결제 → 내 구독(해지·해지 취소)
+// 결제 페이지: 업종 선택 · 요금 일정 → 카카오 로그인 → 동의·카드 등록·첫 달 결제 → 내 구독(해지·해지 취소)
 import { backend, loginErrorMessage } from './backend.js';
+import { askConfirm } from './confirm-dialog.js';
 import { PRICING, STATUS_LABEL, chargeSchedule, paidThroughOn, todayKST } from './billing-core.js';
 
 const $ = (s) => document.querySelector(s);
@@ -9,9 +10,46 @@ const date = (iso) => {
   return `${y}년 ${m}월 ${d}일`;
 };
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const APP_URL = new URL('../app/', location.href).href;
+const SERVICE_KEY = 'retenfit:service';
+const SERVICE = {
+  salon: { label: '미용실', lede: '미용실 대시보드를 시작합니다. 카카오 로그인 후 카드를 등록합니다.', home: '../salon/', app: '../salon/app/' },
+  wax: { label: '왁싱샵', lede: '왁싱샵 대시보드를 시작합니다. 카카오 로그인 후 카드를 등록합니다.', home: '../wax/', app: '../wax/app/' },
+};
+const pickedService = () => document.querySelector('input[name="service"]:checked')?.value ?? 'wax';
+const appUrl = () => new URL(SERVICE[pickedService()].app, location.href).href;
+
+/** 주소의 ?service=, 지난 선택 순서로 업종을 정하고 화면 색과 문구를 맞춥니다 */
+function applyService(value) {
+  const service = SERVICE[value] ? value : 'wax';
+  document.documentElement.dataset.service = service;
+  const radio = document.querySelector(`input[name="service"][value="${service}"]`);
+  if (radio) radio.checked = true;
+  $('#brand-service').textContent = SERVICE[service].label;
+  $('#service-lede').textContent = SERVICE[service].lede;
+  $('#back-link').href = new URL(SERVICE[service].home, location.href).href;
+  const open = $('#open-app');
+  if (open) open.href = appUrl();
+  const demo = $('#demo-link');
+  if (demo) demo.href = `${appUrl()}?demo=1`;
+  try {
+    localStorage.setItem(SERVICE_KEY, service);
+  } catch {
+    /* 저장하지 못해도 이 화면에서는 동작합니다 */
+  }
+}
+
+function initService() {
+  let saved = null;
+  try {
+    saved = localStorage.getItem(SERVICE_KEY);
+  } catch {
+    /* 무시 */
+  }
+  applyService(new URLSearchParams(location.search).get('service') ?? saved);
+  document.querySelectorAll('input[name="service"]').forEach((r) => r.addEventListener('change', () => applyService(r.value)));
+}
 const ADMIN_URL = new URL('../admin/', location.href).href;
-const PENDING = 'waxfit:pending-subscribe';
+const PENDING = 'retenfit:pending-subscribe';
 const KAKAO_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.48 3 2 6.5 2 10.82c0 2.8 1.86 5.25 4.66 6.63l-.95 3.48c-.08.3.26.54.52.37l4.13-2.74c.54.06 1.09.1 1.64.1 5.52 0 10-3.5 10-7.84S17.52 3 12 3z"/></svg>';
 
 function say(text, tone = '') {
@@ -42,7 +80,7 @@ function renderLogin(be, user) {
   }
   area.innerHTML = `${be.mode === 'dev' ? '<div class="form-row"><label>[로컬 테스트] 로그인 이름 <input id="dev-nickname" value="테스트 사장님" maxlength="20"></label></div>' : ''}
     <button type="button" class="btn btn-kakao btn-lg" id="kakao-login">${KAKAO_ICON}카카오로 로그인</button>
-    <p class="muted">카카오 계정으로 바로 가입·로그인됩니다. 별도 비밀번호가 없습니다.</p>`;
+    <p class="muted">누르면 카카오 로그인 화면으로 이동합니다. 별도 비밀번호는 없습니다.</p>`;
   $('#kakao-login').addEventListener('click', async () => {
     try {
       await be.login({ returnTo: location.href.split('?')[0], nickname: $('#dev-nickname')?.value.trim() || undefined });
@@ -68,14 +106,14 @@ function renderSubscription(be, st) {
       <tr><th scope="row">${canceled ? '이용 가능 기간' : '다음 결제'}</th><td>${canceled ? `${date(paidThroughOn(s))} 전날까지` : esc(next)}</td></tr>
     </table>
     ${s.status === 'past_due' ? '<p class="notice warn">결제가 되지 않아 다시 시도하고 있습니다. 카드 한도·유효기간을 확인해 주세요.</p>' : ''}
-    <div class="cta-row" style="margin-top:16px">
-      ${st.access ? `<a class="btn btn-primary" href="${APP_URL}">왁스핏 열기</a>` : ''}
+    <div class="cta-row sub-actions">
+      ${st.access ? `<a class="btn btn-primary" id="open-app" href="${appUrl()}">대시보드 열기</a>` : ''}
       ${canceled ? '<button type="button" class="btn btn-line" id="resume">해지 취소</button>' : ''}
       ${['trial', 'active', 'past_due'].includes(s.status) ? '<button type="button" class="btn btn-line" id="cancel">구독 해지</button>' : ''}
       ${st.isAdmin ? `<a class="btn btn-line" href="${ADMIN_URL}">운영자 분석</a>` : ''}
     </div>`;
   $('#cancel')?.addEventListener('click', async () => {
-    if (!confirm(`해지할까요? ${date(paidThroughOn(s))} 전날까지는 그대로 쓸 수 있고, 이후 결제되지 않습니다.`)) return;
+    if (!(await askConfirm(`해지할까요? ${date(paidThroughOn(s))} 전날까지는 그대로 쓸 수 있고, 이후 결제되지 않습니다.`, { confirmLabel: '구독 해지', cancelLabel: '계속 쓰기', danger: true }))) return;
     try {
       await be.cancel();
       say('해지했습니다. 남은 기간 동안은 계속 쓸 수 있습니다.', 'ok');
@@ -144,18 +182,61 @@ function readForm() {
   };
 }
 
+/** 칸 바로 아래에 오류를 적습니다. text가 비어 있으면 지웁니다 */
+function fieldError(input, text) {
+  const id = `${input.name}-error`;
+  let note = document.getElementById(id);
+  if (!text) {
+    note?.remove();
+    input.removeAttribute('aria-invalid');
+    return;
+  }
+  if (!note) {
+    note = Object.assign(document.createElement('span'), { id, className: 'field-error' });
+    input.after(note);
+  }
+  note.textContent = text;
+  input.setAttribute('aria-invalid', 'true');
+}
+
+/** 틀린 칸마다 이유를 적고 첫 번째 칸으로 옮겨 갑니다 */
+function validate({ customer, agreed }) {
+  const f = $('#pay-form');
+  const checks = [
+    [f.shopName, customer.shopName ? '' : '매장 이름을 입력해 주세요.'],
+    [f.phone, /^01[0-9]-?\d{3,4}-?\d{4}$/.test(customer.phone) ? '' : '휴대폰 번호를 010-1234-5678처럼 입력해 주세요.'],
+    [f.email, !customer.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email) ? '' : '이메일 형식을 확인해 주세요. 비워 두어도 됩니다.'],
+  ];
+  checks.forEach(([input, text]) => fieldError(input, text));
+  const wrong = checks.find(([, text]) => text);
+  if (wrong) {
+    say('');
+    wrong[0].focus({ preventScroll: true });
+    wrong[0].scrollIntoView({ block: 'center' });
+    return false;
+  }
+  const unchecked = [[f.terms, agreed.terms], [f.privacy, agreed.privacy], [f.billing, agreed.billing]].find(([, ok]) => !ok);
+  if (unchecked) {
+    say('필수 항목에 모두 동의해 주세요.', 'warn');
+    unchecked[0].focus({ preventScroll: true });
+    return false;
+  }
+  return true;
+}
+
 function bindForm(be) {
   const f = $('#pay-form');
   const boxes = [f.terms, f.privacy, f.billing];
   $('#agree-all').addEventListener('change', (e) => boxes.forEach((b) => (b.checked = e.target.checked)));
   boxes.forEach((b) => b.addEventListener('change', () => ($('#agree-all').checked = boxes.every((x) => x.checked))));
+  [f.shopName, f.phone, f.email].forEach((input) => input.addEventListener('input', () => fieldError(input, '')));
   f.addEventListener('submit', async (e) => {
     e.preventDefault();
     const { customer, agreed, testCard } = readForm();
-    if (!customer.shopName || !/^01[0-9]-?\d{3,4}-?\d{4}$/.test(customer.phone)) return say('매장 이름과 휴대폰 번호를 확인해 주세요.', 'warn');
-    if (!agreed.terms || !agreed.privacy || !agreed.billing) return say('필수 항목에 모두 동의해 주세요.', 'warn');
+    if (!validate({ customer, agreed })) return;
     setPayEnabled(false);
     $('#pay-btn').textContent = '결제 진행 중…';
+    $('#pay-btn').setAttribute('aria-busy', 'true');
     say('');
     try {
       sessionStorage.setItem(PENDING, JSON.stringify({ customer, agreed })); // 휴대폰 결제창이 돌아올 때 사용
@@ -167,14 +248,15 @@ function bindForm(be) {
       say(err.message, 'bad');
       setPayEnabled(true);
     } finally {
-      $('#pay-btn').textContent = '4,900원 결제하고 시작하기';
+      $('#pay-btn').textContent = '결제하기 · 첫 달 4,900원';
+      $('#pay-btn').removeAttribute('aria-busy');
     }
   });
 }
 
 function done(st) {
   const next = st.next ? ` 다음 결제는 ${date(st.next.on)} ${won(st.next.amount)}입니다.` : '';
-  say(`첫 달 ${won(PRICING.introPrice)} 결제가 끝났습니다. 왁스핏을 시작하세요!${next}`, 'ok');
+  say(`첫 달 ${won(PRICING.introPrice)} 결제가 끝났습니다. ‘대시보드 열기’를 누르면 바로 시작합니다.${next}`, 'ok');
 }
 
 /** 휴대폰 결제창에서 돌아온 경우: ?billingKey=… 로 가입 마무리, 실패면 ?code=…&message=… */
@@ -194,12 +276,13 @@ async function completeRedirect(be) {
 }
 
 async function init() {
+  initService();
   const loginError = loginErrorMessage(location.search);
   if (loginError) history.replaceState(null, '', location.pathname);
   renderSchedule(todayKST());
   const be = await backend();
   if (be.mode === 'off') {
-    $('#mode-note').innerHTML = '<p class="notice warn">결제 오픈을 준비하고 있습니다. 요금과 결제 일정은 아래와 같습니다.</p>';
+    $('#mode-note').innerHTML = `<p class="notice warn">결제 오픈을 준비하고 있습니다. 요금과 결제 일정은 아래와 같습니다. 그동안 <a id="demo-link" href="${appUrl()}?demo=1">샘플 매장 화면</a>을 둘러볼 수 있습니다.</p>`;
     $('#login-area').innerHTML = '<button type="button" class="btn btn-kakao btn-lg" disabled>카카오로 로그인 (오픈 준비 중)</button>';
     setPayEnabled(false, '결제 오픈 준비 중');
     return;

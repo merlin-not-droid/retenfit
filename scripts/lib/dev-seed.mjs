@@ -42,14 +42,16 @@ export async function seedDemo({ store, today, count = 36, seed = 11 }) {
     sub = expire(sub, today);
     await store.putSub(sub);
     await store.putBillingKey(userId, 'dev-ok');
-    await store.upsertProfile({ userId, nickname: `샘플 사장님 ${no}`, email: '', phone: `010-0000-${String(1000 + i)}`, shopName: `샘플 왁싱 ${no}호점`, createdOn: startedOn });
+    const service = i % 2 ? 'salon' : 'wax';
+    const shopName = `샘플 ${service === 'salon' ? '미용실' : '왁싱샵'} ${no}호점`;
+    await store.upsertProfile({ userId, nickname: `샘플 사장님 ${no}`, email: '', phone: `010-0000-${String(1000 + i)}`, shopName, createdOn: startedOn });
     if (sub.status === 'ended') continue;
     const [area, label] = AREAS[Math.floor(r() * AREAS.length)];
     const customers = 60 + Math.floor(r() * 340);
     const treated = 20 + Math.floor(r() * 60);
     const control = 8 + Math.floor(r() * 20);
     await store.putMetrics(userId, addDays(today, -Math.floor(r() * 3)), {
-      shopName: `샘플 왁싱 ${no}호점`, tradeArea: area, tradeAreaLabel: label, customers, visits: Math.round(customers * (1.8 + r())),
+      service, shopName, tradeArea: area, tradeAreaLabel: label, customers, visits: Math.round(customers * (1.8 + r())),
       newPerMonth: Math.round((5 + r() * 35) * 10) / 10, secondVisitRate: Math.round((0.25 + r() * 0.35) * 1000) / 1000,
       regularRate: Math.round((0.35 + r() * 0.35) * 1000) / 1000, activeRegulars: Math.floor(customers * (0.1 + r() * 0.25)),
       lapsedCount: Math.floor(customers * r() * 0.15),

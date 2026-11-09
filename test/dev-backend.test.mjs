@@ -33,7 +33,7 @@ test('카카오 로그인 오류 주소를 사장님이 이해할 문구로 바�
 });
 
 test('테스트 카드 칸이 실제 결제 화면에 보이지 않는다: hidden 속성이 CSS에 밀리지 않음', () => {
-  const css = readFileSync(new URL('../src/assets/site.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/assets/tokens.css', import.meta.url), 'utf8');
   const page = readFileSync(new URL('../src/checkout/index.html', import.meta.url), 'utf8');
   assert.match(page, /<label id="test-card-field" hidden>/);
   assert.match(css, /\[hidden\]\s*\{\s*display:\s*none\s*!important;?\s*\}/);

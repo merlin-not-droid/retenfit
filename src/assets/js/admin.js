@@ -1,6 +1,6 @@
 // 운영자 전용 분석: 구독·결제·체험가 전환·매장 지표·매장 간 실험 합산
 // 데이터 보호는 서버가 합니다(Supabase 행 단위 보안: 운영자 계정만 전체 행을 받음). 이 화면은 받은 데이터를 보여 주기만 합니다.
-import { CATALOG_BY_ID } from '../../app/js/promo-engine/index.js';
+import { CATALOG_BY_ID } from './promo-engine/index.js';
 import { backend, loginErrorMessage } from './backend.js';
 import { PRICING, STATUS_LABEL, adminSummary, chargeAmount, todayKST } from './billing-core.js';
 
@@ -20,7 +20,9 @@ function table(head, rows, empty = '없습니다.') {
 }
 
 function revenueChart(monthly) {
-  const W = 720;
+  // 좁은 화면에서는 viewBox를 줄여 글자가 함께 작아지지 않게 하고, 월 이름은 건너뛰어 적습니다
+  const narrow = globalThis.matchMedia?.('(max-width: 640px)').matches;
+  const W = narrow ? 340 : 720;
   const H = 200;
   const max = Math.max(1, ...monthly.map((m) => m.revenue));
   const bw = W / monthly.length;
@@ -28,15 +30,15 @@ function revenueChart(monthly) {
     const h = Math.round((m.revenue / max) * (H - 50));
     const x = i * bw + bw * 0.2;
     return `<rect class="bar" x="${x.toFixed(1)}" y="${H - 24 - h}" width="${(bw * 0.6).toFixed(1)}" height="${h}" rx="3"><title>${m.month} ${won(m.revenue)}</title></rect>
-      <text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 6}" text-anchor="middle">${Number(m.month.slice(5))}월</text>
-      ${m.revenue ? `<text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 30 - h}" text-anchor="middle">${Math.round(m.revenue / 1000).toLocaleString('ko-KR')}천</text>` : ''}`;
+      ${narrow && i % 2 ? '' : `<text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 6}" text-anchor="middle">${Number(m.month.slice(5))}월</text>`}
+      ${m.revenue && !narrow ? `<text x="${(x + bw * 0.3).toFixed(1)}" y="${H - 30 - h}" text-anchor="middle">${Math.round(m.revenue / 1000).toLocaleString('ko-KR')}천</text>` : ''}`;
   });
   return `<svg class="bar-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 12개월 결제액">${bars.join('')}</svg>`;
 }
 
 function noticeText(s) {
   const d = s.nextChargeOn;
-  return `[WAXFIT] ${s.profile?.shopName || '사장님'} 사장님, 체험가(월 ${PRICING.introPrice.toLocaleString('ko-KR')}원) 3개월이 끝나 ${Number(d.slice(5, 7))}월 ${Number(d.slice(8, 10))}일부터 월 ${PRICING.regularPrice.toLocaleString('ko-KR')}원(부가세 포함)으로 결제됩니다. 계속 쓰지 않으시려면 그 전에 ‘내 구독’에서 해지해 주세요. ${CHECKOUT_URL}`;
+  return `[리텐핏] ${s.profile?.shopName || '사장님'} 사장님, 체험가(월 ${PRICING.introPrice.toLocaleString('ko-KR')}원) 3개월이 끝나 ${Number(d.slice(5, 7))}월 ${Number(d.slice(8, 10))}일부터 월 ${PRICING.regularPrice.toLocaleString('ko-KR')}원(부가세 포함)으로 결제됩니다. 계속 쓰지 않으시려면 그 전에 ‘내 구독’에서 해지해 주세요. ${CHECKOUT_URL}`;
 }
 
 function csv(rows) {
@@ -65,8 +67,12 @@ function render(root, sum, data) {
     return v.length ? v.reduce((a, x) => a + x, 0) / v.length : NaN;
   };
 
+  const serviceCount = { salon: 0, wax: 0, unknown: 0 };
+  for (const m of sum.stores) serviceCount[m.data?.service === 'salon' ? 'salon' : m.data?.service === 'wax' ? 'wax' : 'unknown'] += 1;
+  serviceCount.unknown += Math.max(0, sum.subscribers - sum.stores.length);
+
   root.innerHTML = `
-  <p class="muted">기준일 ${esc(sum.today)} · 구독 계정 ${sum.subscribers}개</p>
+  <p class="muted">기준일 ${esc(sum.today)} · 구독 계정 ${sum.subscribers}개 · 업종: 미용실 ${serviceCount.salon}곳, 왁싱샵 ${serviceCount.wax}곳, 미확인 ${serviceCount.unknown}곳</p>
   <div class="kpi-grid">
     <div class="kpi"><span>이용 중인 매장</span><b>${sum.live}곳</b><small>체험가 ${b.trial} · 정가 ${b.active} · 결제 실패 ${b.past_due}</small></div>
     <div class="kpi"><span>월 반복 매출(MRR)</span><b>${won(sum.mrr)}</b><small>이용 중 매장의 다음 결제 금액 합</small></div>
@@ -90,8 +96,8 @@ function render(root, sum, data) {
 
   <section class="card"><h2>구독 매장 지표</h2>
     <p class="muted">앱이 하루 한 번 보내는 매장 집계 숫자입니다(손님 개인정보 없음).</p>
-    ${table(['매장', '상태', '상권', { label: '손님', num: 1 }, { label: '월 신규', num: 1 }, { label: '첫 재방문율', num: 1 }, { label: '활성 단골', num: 1 }, { label: '실험', num: 1 }, '동기화'],
-      sum.stores.map((s) => [shop(s.profile ?? { shopName: s.data?.shopName }), s.subscription ? `<span class="pill ${s.subscription.status}">${esc(STATUS_LABEL[s.subscription.status])}</span>` : '–',
+    ${table(['매장', '업종', '상태', '상권', { label: '손님', num: 1 }, { label: '월 신규', num: 1 }, { label: '첫 재방문율', num: 1 }, { label: '활성 단골', num: 1 }, { label: '실험', num: 1 }, '동기화'],
+      sum.stores.map((s) => [shop(s.profile ?? { shopName: s.data?.shopName }), { salon: '미용실', wax: '왁싱샵' }[s.data?.service] ?? '–', s.subscription ? `<span class="pill ${s.subscription.status}">${esc(STATUS_LABEL[s.subscription.status])}</span>` : '–',
         esc(s.data?.tradeAreaLabel ?? ''), s.data?.customers ?? '–', s.data?.newPerMonth?.toFixed?.(1) ?? '–', pct(s.data?.secondVisitRate), s.data?.activeRegulars ?? '–',
         s.data?.experiments?.length ?? 0, md(s.syncedOn)]), '아직 매장 지표가 올라오지 않았습니다.')}
     ${sum.stores.length ? `<p class="muted">평균 첫 재방문율 ${pct(avg('secondVisitRate'))} · 평균 월 신규 ${Number.isFinite(avg('newPerMonth')) ? avg('newPerMonth').toFixed(1) : '–'}명</p>` : ''}</section>
@@ -128,18 +134,18 @@ function render(root, sum, data) {
       })],
     payments: () => [['결제 번호', '매장', '날짜', '회차', '금액', '상태', '실패 사유'],
       ...data.payments.map((p) => [p.id, profileOf.get(p.userId)?.shopName, p.paidOn, p.chargeIndex + 1, p.amount, p.status, p.failure])],
-    stores: () => [['매장', '동기화', '상권', '손님', '방문', '월 신규', '첫 재방문율', '단골 전환율', '활성 단골', '휴면', '진행 실험'],
-      ...data.metrics.map((m) => [profileOf.get(m.userId)?.shopName ?? m.data?.shopName, m.syncedOn, m.data?.tradeAreaLabel, m.data?.customers, m.data?.visits,
+    stores: () => [['매장', '업종', '동기화', '상권', '손님', '방문', '월 신규', '첫 재방문율', '단골 전환율', '활성 단골', '휴면', '진행 실험'],
+      ...data.metrics.map((m) => [profileOf.get(m.userId)?.shopName ?? m.data?.shopName, m.data?.service ?? '', m.syncedOn, m.data?.tradeAreaLabel, m.data?.customers, m.data?.visits,
         m.data?.newPerMonth, m.data?.secondVisitRate, m.data?.regularRate, m.data?.activeRegulars, m.data?.lapsedCount, m.data?.experiments?.length ?? 0])],
   };
-  root.querySelectorAll('[data-csv]').forEach((btn) => btn.addEventListener('click', () => download(`waxfit-${btn.dataset.csv}-${sum.today}.csv`, csv(files[btn.dataset.csv]()))));
+  root.querySelectorAll('[data-csv]').forEach((btn) => btn.addEventListener('click', () => download(`retenfit-${btn.dataset.csv}-${sum.today}.csv`, csv(files[btn.dataset.csv]()))));
 }
 
 async function init() {
   const root = $('#admin');
   const be = await backend();
   if (be.mode === 'off') {
-    root.innerHTML = '<p class="notice warn">결제 서버가 아직 연결되지 않았습니다. assets/js/backend-config.js를 설정하면 쓸 수 있습니다(guide/BILLING.md).</p>';
+    root.innerHTML = '<p class="notice warn">결제 서버가 아직 연결되지 않았습니다. 결제를 열면 이 화면에서 구독·결제·매장 지표를 볼 수 있습니다.</p>';
     return;
   }
   const user = await be.session();

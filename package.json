@@ -1,8 +1,8 @@
 {
-  "name": "waxfit-site",
+  "name": "retenfit-site",
   "version": "1.0.0",
   "private": true,
-  "description": "WAXFIT 웹사이트 — GitHub Pages 자동 배포 + 네이버·구글 검색 노출 자동화",
+  "description": "RETENFIT(리텐핏) 웹사이트 — GitHub Pages 자동 배포 + 네이버·구글 검색 노출 자동화",
   "type": "module",
   "engines": {
     "node": ">=20"

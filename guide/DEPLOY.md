@@ -48,13 +48,13 @@ Pages를 켜기 전에 push 했다면, 워크플로가 빌드·검사만 하고 
 
 `github.io` 주소로도 운영할 수 있지만 서비스라면 자체 도메인을 권합니다.
 
-- 브랜드 신뢰도: `waxfit.kr` 같은 주소가 검색 결과에서 더 믿음직합니다.
+- 브랜드 신뢰도: `retenfit.kr` 같은 주소가 검색 결과에서 더 믿음직합니다.
 - 검색 등록: 하위 경로(`/waxfit/`) 사이트는 robots.txt가 무시되고, 네이버 서치어드바이저·다음 웹마스터도구 등록이 제한될 수 있습니다.
 - 이전 가능: 나중에 호스팅을 바꿔도 주소와 검색 기록이 유지됩니다.
 
 ### 절차
 
-1. 도메인 구입 (가비아·후이즈·Cloudflare 등, `.kr`·`.co.kr`·`.com` 등). 사기 전에 [KIPRIS](https://www.kipris.or.kr) 에서 ‘왁스핏’ 상표를 확인해 두세요.
+1. 도메인 구입 (가비아·후이즈·Cloudflare 등, `.kr`·`.co.kr`·`.com` 등). 사기 전에 [KIPRIS](https://www.kipris.or.kr) 에서 ‘리텐핏’ 상표를 확인해 두세요.
 2. 도메인 업체의 DNS 설정에서 다음을 추가합니다.
 
    | 종류 | 이름(호스트) | 값 |
@@ -66,7 +66,7 @@ Pages를 켜기 전에 push 했다면, 워크플로가 빌드·검사만 하고 
    | CNAME | `www` | `<아이디>.github.io` |
 
    (IPv6를 지원하는 업체라면 AAAA `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153` 도 추가)
-3. 저장소 **Settings → Pages → Custom domain** 에 `waxfit.kr` 입력 → Save
+3. 저장소 **Settings → Pages → Custom domain** 에 `retenfit.kr` 입력 → Save
    (GitHub Actions 배포는 `CNAME` 파일이 필요 없습니다.)
 4. DNS 확인이 끝나면 **Enforce HTTPS** 체크 (인증서 발급까지 최대 하루)
 5. 도메인 탈취 방지: GitHub 계정 **Settings → Pages → Add a domain** 에서 TXT 레코드로 도메인 소유를 인증해 두세요.

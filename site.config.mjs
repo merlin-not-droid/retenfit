@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// WAXFIT 사이트 설정
+// RETENFIT(리텐핏) 사이트 설정
 //
 // 이 파일만 고치면 검색 노출에 필요한 것들이 빌드할 때 자동으로 만들어집니다.
 //   · 모든 페이지: canonical 주소, Open Graph(카카오톡·SNS 공유 미리보기), lang 속성
@@ -16,9 +16,9 @@ export default {
   // 이 값은 내 컴퓨터에서 빌드하거나 Pages를 켜기 전에만 쓰입니다.
   siteUrl: 'https://merlin-not-droid.github.io/waxfit/',
 
-  siteName: 'WAXFIT',
+  siteName: 'RETENFIT',
   // 검색 결과에 사이트 이름으로 쓰일 수 있는 다른 표기
-  alternateNames: ['왁스핏'],
+  alternateNames: ['리텐핏'],
 
   language: 'ko',
   locale: 'ko_KR',
@@ -27,7 +27,7 @@ export default {
   ogImage: '/assets/og.png',
 
   // 모바일 브라우저 주소창 색
-  themeColor: '#f7f2ec',
+  themeColor: '#231a14',
 
   // 검색엔진 소유 확인 코드 — 발급받은 <meta> 태그의 content="..." 값만 넣으세요.
   // (태그 전체를 붙여넣어도 content 값만 골라 씁니다.)
@@ -45,7 +45,7 @@ export default {
     // (예: 'BeautySalon', 'HealthClub', 'SportsActivityLocation'),
     // 온라인 서비스·브랜드라면 'Organization'.
     type: 'Organization',
-    name: 'WAXFIT',
+    name: 'RETENFIT',
     description: '', // 비워 두면 홈 페이지의 meta description을 씁니다
     logo: '/assets/logo.png', // 정사각형, 112px 이상
     image: '', // 예: '/assets/store.jpg'
