@@ -24,7 +24,7 @@ function salesPanel(visits, asOf) {
   if (!rows.length) return '';
   return html`<section class="panel">
     <h2>월별 매출</h2>
-    <p class="help">완료된 방문 기록의 결제액 합계입니다.</p>
+    <p class="help hint">완료된 방문 기록의 결제액 합계입니다.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">월</th><th scope="col" class="num">매출</th><th scope="col" class="num">방문</th><th scope="col" class="num">손님</th><th scope="col" class="num">객단가</th></tr></thead>
       <tbody>${rows.map((m) => html`<tr><td>${m.month}</td><td class="num"><b>${won(m.revenue)}</b></td><td class="num">${num(m.visits)}건</td><td class="num">${num(m.customers.size)}명</td><td class="num">${won(m.revenue / (m.visits || 1))}</td></tr>`)}</tbody>
@@ -93,7 +93,7 @@ export function render(app) {
 
   <section class="panel">
     <h2>첫 방문 프로모션별 재방문율</h2>
-    <p class="help">손님이 처음 왔을 때 받은 프로모션으로 묶었습니다. 가는 선은 95% 신뢰 구간이며, 구간이 서로 많이 겹치면 차이가 우연일 수 있습니다.</p>
+    <p class="help hint">손님이 처음 왔을 때 받은 프로모션으로 묶었습니다. 가는 선은 95% 신뢰 구간이며, 구간이 서로 많이 겹치면 차이가 우연일 수 있습니다.</p>
     ${rateBars(chartRows)}
     <div class="table-wrap"><table>
       <thead><tr>
@@ -114,7 +114,7 @@ export function render(app) {
 
   <section class="panel">
     <h2>월별 신규 손님과 재방문율</h2>
-    <p class="help">막대: 그달 처음 온 손님 수 · 선: 그 손님들의 재방문율 (관찰 기간이 끝난 달만 표시)</p>
+    <p class="help hint">막대: 그달 처음 온 손님 수 · 선: 그 손님들의 재방문율 (관찰 기간이 끝난 달만 표시)</p>
     ${monthlyChart(r.monthly)}
   </section>
 

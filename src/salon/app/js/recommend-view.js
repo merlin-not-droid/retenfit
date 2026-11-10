@@ -50,7 +50,7 @@ function running(state) {
     return `<tr><td>${esc(x.month)}</td><td>${esc(x.label)}</td><td class="num">${x.treatment.length}명</td><td class="num">${x.control.length}명</td><td>${esc(result)}</td></tr>`;
   }).join('');
   return `<section class="panel"><h2>실행 중인 추천과 결과</h2>
-    <p class="help">실행을 기록하면 대상 손님의 일부를 혜택 없는 비교군으로 나눕니다. 다음 달 고객 데이터를 올리면 최근 방문일로 재방문 수를 자동 계산해 추천에 반영합니다.</p>
+    <p class="help hint">실행을 기록하면 대상 손님의 일부를 혜택 없는 비교군으로 나눕니다. 다음 달 고객 데이터를 올리면 최근 방문일로 재방문 수를 자동 계산해 추천에 반영합니다.</p>
     <div class="table-wrap"><table><thead><tr><th scope="col">월</th><th scope="col">추천</th><th scope="col" class="num">혜택군</th><th scope="col" class="num">비교군</th><th scope="col">결과</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
 }
 
@@ -71,7 +71,7 @@ export function renderRecommend(state, rec) {
     <div><span>이탈 위험</span><b>${f.lapsedCount}명</b></div>
   </div>
   <section class="panel"><h2>이번 달 실행 플랜</h2>
-    <p class="help">월 예산 ${money(store.monthlyPromoBudget)}과 예약 여유 안에서 고른 조합입니다. 금액과 효과는 초기 가정으로 계산한 추정치이며, 비교군 결과가 쌓이면 보정됩니다.</p>
+    <p class="help hint">월 예산 ${money(store.monthlyPromoBudget)}과 예약 여유 안에서 고른 조합입니다. 금액과 효과는 초기 가정으로 계산한 추정치이며, 비교군 결과가 쌓이면 보정됩니다.</p>
     ${plan.selected.length
       ? `<div class="rec-cards">${plan.selected.map((e, i) => row(e, i, state)).join('')}</div>
          <p class="rec-total">합계 · 월 비용 ${about(plan.totals.costPerMonth)} · 12개월 기대 순이익 ${about(plan.totals.eip)}</p>`
@@ -79,6 +79,7 @@ export function renderRecommend(state, rec) {
   </section>
   ${monthlySummaryHtml(plan.changes, esc)}
   ${running(state)}
+  <details class="fold" data-panel="rec-basis"><summary><span>추천 근거와 다른 선택지</span></summary><div class="fold-body">
   <div class="two-col">
     <section class="panel"><h2>어디서 이익이 새나요</h2>
       <div class="meter-list">${objs.map((o) => `<div class="meter-row"><span class="meter-label">${esc(OBJECTIVE_LABEL[o.objective])}</span>${meter(o.weight)}<b>${pct(o.weight)}</b></div>`).join('')}</div>
@@ -95,21 +96,22 @@ export function renderRecommend(state, rec) {
       ? `<ol>${plan.byObjective[o].slice(0, 4).map((e) => `<li>${esc(e.device.name)} <span class="sub">${e.device.lever.kind === 'none' ? '가격 혜택 없음' : esc(e.recommended.label)}</span></li>`).join('')}</ol>`
       : '<p class="help small">조건에 맞는 항목이 없습니다.</p>'}</div>`).join('')}</div>
     ${left.length ? `<details class="why" style="margin-top:12px"><summary>이번 달 플랜에서 빠진 항목과 이유 (${left.length})</summary><ul>${left.map((x) => `<li>${esc(x.reason)}</li>`).join('')}</ul></details>` : ''}
-  </section>`;
+  </section>
+  </div></details>`;
 }
 
 export function renderSales(state) {
   const r = salesReport(state);
   const s = state.settings;
   const totalRow = r.rows.length
-    ? `<section class="panel"><h2>월별 매출</h2><p class="help">완료된 방문 기록의 결제액 합계입니다.</p>
+    ? `<section class="panel"><h2>월별 매출</h2><p class="help hint">완료된 방문 기록의 결제액 합계입니다.</p>
         <div class="table-wrap sales-months"><table><thead><tr><th scope="col">월</th><th scope="col" class="num">매출</th><th scope="col" class="num">방문</th><th scope="col" class="num">객단가</th>${s.services.map((v) => `<th scope="col" class="num">${esc(v.name)}</th>`).join('')}</tr></thead>
         <tbody>${r.rows.map((m) => `<tr><td>${esc(m.month)}</td><td class="num"><b>${money(m.revenue)}</b></td><td class="num">${m.visits}건</td><td class="num">${money(m.revenue / (m.visits || 1))}</td>${s.services.map((v) => `<td class="num">${money(m.byService[v.id] ?? 0)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`
     : `<section class="panel"><h2>월별 매출</h2><p class="empty">방문 단위 기록이 없어 월별 매출을 계산할 수 없습니다. 지금은 아래의 설정 기준 예상만 볼 수 있습니다.</p></section>`;
   return `${totalRow}
   <div class="two-col">
     <section class="panel"><h2>이번 달 예상 손익</h2>
-      <p class="help">매장 설정의 예상 건수가 그대로 달성된다고 가정한 값입니다.</p>
+      <p class="help hint">매장 설정의 예상 건수가 그대로 달성된다고 가정한 값입니다.</p>
       <dl class="figures">
         <div><dt>예상 매출</dt><dd>${money(r.model.sales)}</dd></div>
         <div><dt>재료비</dt><dd>− ${money(r.model.material)}</dd></div>

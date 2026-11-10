@@ -71,8 +71,15 @@ function toast(text){$('#toast').textContent=text;$('#toast').classList.add('sho
 function navTo(next){tab=next;history.replaceState(null,'',`#/${next}`);render();window.scrollTo({top:0,behavior:'instant'});document.getElementById('content')?.focus({preventScroll:true});}
 function recommendation(){const rec=buildSalonRecommendation(state);if(rec.recordChanged)save();return rec;}
 const findEval=id=>recommendation().plan.selected.find(e=>e.device.id===id);
-const titles={recommend:['이번 달 추천','매장 기록과 지난달 결과로 이번 달에 할 일을 다시 계산했습니다.'],overview:['재방문 현황','멀어지는 단골과 이번 달 혜택 후보, 매장이 감당할 수 있는 범위를 봅니다.'],customers:['고객 목록','방문 횟수와 최근 방문일로 나눈 고객군별 목록입니다.'],ai:['고객별 제안','손님별 방문 주기로 먼저 연락할 손님과 펌 상담을 권할 손님을 찾습니다.'],planner:['프로모션 설계','혜택과 숫자를 정하고, 시술 1회에 얼마가 남는지 확인합니다.'],sales:['매출 분석','월별 매출과 이번 달 예상 손익을 봅니다.'],growth:['관계·계절 전략','고객 단계와 계절에 맞는 혜택, 비교군 실험을 관리합니다.'],settings:['매장 설정','추천과 손익 계산의 기준이 되는 매장 숫자입니다.'],data:['고객 데이터','고객별 기록을 CSV로 가져오고 내보냅니다.']};
-const NAV=[['recommend','이번 달 추천'],['overview','재방문 현황'],['customers','고객 목록'],['ai','고객별 제안'],['planner','프로모션 설계'],['sales','매출 분석'],['growth','관계·계절 전략'],['settings','매장 설정'],['data','고객 데이터']];
+const titles={recommend:['이번 달 추천','이번 달에 할 일입니다.'],overview:['재방문 현황','멀어지는 단골과 혜택 후보를 봅니다.'],customers:['고객 목록','고객군별 목록입니다.'],ai:['고객별 제안','먼저 연락할 손님을 찾습니다.'],planner:['프로모션 설계','혜택을 정하고 손익을 확인합니다.'],sales:['매출 분석','월별 매출과 예상 손익입니다.'],growth:['관계·계절 전략','단계·계절별 혜택과 비교군 실험입니다.'],settings:['매장 설정','추천과 손익 계산의 기준입니다.'],data:['고객 데이터','고객 기록을 CSV로 가져오고 내보냅니다.']};
+// 사이드바 메뉴 5개. 각 메뉴 안의 화면은 위쪽 탭으로 나눕니다. 화면 주소(#/경로)는 그대로입니다
+const NAV=[['recommend','이번 달 추천',['recommend']],['customers','고객',['customers','overview','ai']],['promo','프로모션',['planner','growth']],['sales','매출',['sales']],['settings','설정',['settings','data']]];
+const groupOf=t=>NAV.find(g=>g[2].includes(t));
+/** 설명 보기: 안내 문단을 숨기거나 보여 줍니다. 선택은 이 브라우저에 기억합니다 */
+const HELP_KEY='retenfit:help';
+function helpOn(){try{return localStorage.getItem(HELP_KEY)==='on';}catch{return false;}}
+function setHelp(on){document.documentElement.dataset.help=on?'on':'off';try{localStorage.setItem(HELP_KEY,on?'on':'off');}catch{}}
+document.documentElement.dataset.help=helpOn()?'on':'off';
 function banner(){
   if(demo)return `<div class="banner welcome"><p><b>샘플 매장 미리보기</b>입니다. 눌러 볼 수 있지만 저장되지는 않습니다.</p><a class="btn btn-primary btn-sm" href="${CHECKOUT}">결제하기</a></div>`;
   if(state.source==='sample')return `<div class="banner info"><p><b>샘플 데이터</b>(가상 손님 ${state.customers.length}명)를 보고 있습니다. 실제 매장 결과가 아닙니다.</p><button type="button" class="btn btn-line btn-sm" data-action="start-own">내 매장 데이터로 시작</button></div>`;
@@ -80,17 +87,18 @@ function banner(){
   return '';
 }
 function shell(){
-  const s=state.settings,own=state.source!=='sample';
+  const s=state.settings,own=state.source!=='sample',group=groupOf(tab);
   return `<div class="dash"><aside class="dash-side">
     <a class="dash-brand" href="../../" aria-label="리텐핏 처음 화면으로">${MARK}<span>리텐핏<small>미용실</small></span></a>
     <div class="dash-shop">${esc(s.salon)}</div>
-    <nav class="dash-nav" aria-label="주 메뉴">${NAV.map(([key,label])=>`<a href="#/${key}" data-tab="${key}" ${tab===key?'aria-current="page"':''}>${label}${key==='planner'&&state.plans.length?`<span class="nav-count">${state.plans.length}</span>`:''}</a>`).join('')}</nav>
+    <nav class="dash-nav" aria-label="주 메뉴">${NAV.map(([key,label,tabs])=>`<a href="#/${tabs[0]}" data-tab="${tabs[0]}" data-group="${key}" ${tabs.includes(tab)?'aria-current="page"':''}>${label}${key==='promo'&&state.plans.length?`<span class="nav-count">${state.plans.length}</span>`:''}</a>`).join('')}</nav>
     <div class="dash-side-foot"><button type="button" data-action="guide">계산 기준 보기</button></div>
   </aside>
   <div class="dash-body">
-    <header class="dash-top"><strong>${titles[tab][0]}</strong><span class="data-state ${own&&!demo?'real':''}">${demo?'샘플 매장 미리보기':own?'내 매장 데이터':'샘플 데이터'}</span></header>
+    <header class="dash-top"><strong>${group[1]}</strong><span class="dash-top-end"><button type="button" class="help-toggle" data-action="help-toggle" aria-pressed="${helpOn()}">설명 보기</button><span class="data-state ${own&&!demo?'real':''}">${demo?'샘플 매장 미리보기':own?'내 매장 데이터':'샘플 데이터'}</span></span></header>
+    ${group[2].length>1?`<nav class="sub-tabs" aria-label="${group[1]} 메뉴 안의 화면">${group[2].map(t=>`<a href="#/${t}" data-tab="${t}" ${t===tab?'aria-current="page"':''}>${titles[t][0]}</a>`).join('')}</nav>`:''}
     <div class="banner-area">${banner()}</div>
-    <main id="content" class="dash-main" tabindex="-1"><div class="page-heading"><div><h1>${titles[tab][0]}</h1><p>${titles[tab][1]}</p></div><div class="heading-actions">${tab==='overview'?`<button class="btn secondary" data-tab="settings">매장 정보 수정</button><button class="btn primary" data-tab="planner">프로모션 설계로 이동</button>`:tab==='customers'?`<button class="btn secondary" data-action="export-customers">고객 요약 내보내기</button>`:tab==='settings'?'<span class="badge green">저장하면 추천에 반영됩니다</span>':tab==='data'?`<button class="btn secondary" data-action="template">CSV 양식 받기</button>`:''}</div></div><div id="view"></div><footer class="page-footer"><span>리텐핏 미용실 · 고객 기록은 이 기기의 브라우저에만 저장됩니다</span><span>입력값 기반 계산입니다. 고객 반응과 수익을 보장하지 않습니다.</span></footer></main></div></div>`;
+    <main id="content" class="dash-main" tabindex="-1"><div class="page-heading"><div><h1>${titles[tab][0]}</h1><p class="hint">${titles[tab][1]}</p></div><div class="heading-actions">${tab==='overview'?`<button class="btn secondary" data-tab="settings">매장 정보 수정</button><button class="btn primary" data-tab="planner">프로모션 설계로 이동</button>`:tab==='customers'?`<button class="btn secondary" data-action="export-customers">고객 요약 내보내기</button>`:tab==='settings'?'<span class="badge green">저장하면 추천에 반영됩니다</span>':tab==='data'?`<button class="btn secondary" data-action="template">CSV 양식 받기</button>`:''}</div></div><div id="view"></div><footer class="page-footer"><span>고객 기록은 이 기기의 브라우저에만 저장됩니다 · 입력값 기반 계산이며 수익을 보장하지 않습니다</span></footer></main></div></div>`;
 }
 function renderGate(){
   const copy=gateCopy(gate.reason);
@@ -200,6 +208,8 @@ function download(filename,rows){
 }
 function customerRows(customers){return [[...CSV_FIELDS.map(x=>x[2]),...CSV_AI_FIELDS.map(x=>x[0])],...customers.map(c=>[c.id,c.visits,c.last,c.avg,state.settings.services.find(v=>v.id===c.service).name,c.consent,c.history?.cut??'',c.history?.perm??'',c.history?.color??'',c.history?.care??'',c.cycle||'',c.cutAvg||''])];}
 document.addEventListener('click',async e=>{
+  if(e.target.closest('[data-action="help-toggle"]')){const b=e.target.closest('[data-action="help-toggle"]'),on=!helpOn();setHelp(on);b.setAttribute('aria-pressed',String(on));return;}
+  const flow=e.target.closest('.sf-flow a');if(flow){const t=document.querySelector(flow.getAttribute('href'));if(t){e.preventDefault();if(t.tagName==='DETAILS')t.open=true;t.scrollIntoView({block:'start'});}return;}
   const nav=e.target.closest('[data-tab]');if(nav){e.preventDefault();navTo(nav.dataset.tab);if(tab==='planner')updatePlanResult();return;}
   const el=e.target.closest('[data-action]');if(!el)return;const action=el.dataset.action,id=el.dataset.id;
   if(action==='start-own'){if(await askConfirm('샘플 손님을 지우고 내 매장 데이터로 시작할까요? 매장 설정은 예시 값으로 남으니 함께 고쳐 주세요.',{confirmLabel:'샘플 지우고 시작'})){state.customers=[];state.source='import';state.plans=[];state.decisions=[];state.experiments=[];state.monthlyPlans=[];state.visitData=null;initializeDashboard(state);currentPlan=null;save();navTo('settings');toast('샘플을 지웠습니다. 매장 숫자부터 입력해 주세요.');}return;}

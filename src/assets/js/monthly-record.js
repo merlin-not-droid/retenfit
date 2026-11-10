@@ -76,7 +76,7 @@ export function monthlySummaryHtml(changes, esc) {
   const head = `<h2 id="monthly-title">이번 달 달라진 점</h2>`;
   if (!changes.previous) {
     return `<section class="panel" aria-labelledby="monthly-title">${head}
-      <p class="help">이번 달이 첫 추천입니다. 실행 결과가 쌓이면 다음 달부터 효과가 확인된 혜택은 유지하고, 효과가 약하거나 실행하지 않은 혜택은 바꿉니다.</p></section>`;
+      <p class="help">이번 달이 첫 추천입니다. 다음 달부터 실행 결과를 반영해 바뀝니다.</p></section>`;
   }
   const col = (title, rows, empty) => `<div><h3>${title}</h3>${rows.length ? `<ul>${rows.join('')}</ul>` : `<p class="help small">${empty}</p>`}</div>`;
   return `<section class="panel" aria-labelledby="monthly-title">${head}

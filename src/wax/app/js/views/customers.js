@@ -30,7 +30,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">손님별 방문·결제 기록을 관리합니다. 이름 대신 별칭을 쓰고, 연락처는 안내를 보낼 때만 적어 주세요. 기록은 이 기기의 브라우저에만 저장됩니다.</p>
+    <p class="help hint">손님별 방문·결제 기록을 관리합니다. 이름 대신 별칭을 쓰고, 연락처는 안내를 보낼 때만 적어 주세요. 기록은 이 기기의 브라우저에만 저장됩니다.</p>
     <div class="btn-row">
       <button type="button" class="btn btn-primary btn-sm" id="cu-add">손님 추가</button>
       <button type="button" class="btn btn-line btn-sm" id="cu-add-visit" ${state.customers.length ? '' : raw('disabled')}>방문 기록 추가</button>

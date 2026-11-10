@@ -52,7 +52,7 @@ function results(r) {
       <thead><tr><th scope="col"></th><th scope="col">대상</th><th scope="col">관찰 완료</th><th scope="col">다시 옴</th><th scope="col">비율</th></tr></thead>
       <tbody>${row('treat', treat)}${row('control', control)}</tbody></table></div>
     <p class="xp-effect">혜택군 − 비교군: <b>${effect(r.stats.diff, false)}</b> <span class="sub">${range(r.stats.ci, false)}</span></p>
-    ${r.stats.verdict === 'collecting' ? html`<p class="help small">각 군 관찰 완료 10명 이상부터 판단합니다. 관찰 중: 혜택군 ${num(treat.observing)}명 · 비교군 ${num(control.observing)}명</p>` : ''}
+    ${r.stats.verdict === 'collecting' ? html`<p class="help hint small">각 군 관찰 완료 10명 이상부터 판단합니다. 관찰 중: 혜택군 ${num(treat.observing)}명 · 비교군 ${num(control.observing)}명</p>` : ''}
     ${r.stats.needed ? html`<p class="help small">이 정도 차이를 확인하려면 각 군 약 ${num(r.stats.needed)}명이 필요합니다. 비슷한 매장 결과와 합치면 더 빨라집니다.</p>` : ''}`;
 }
 
@@ -95,7 +95,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">프로모션을 받은 손님과 <b>받지 않은 손님(비교군)</b>을 같은 기간에 비교해, ‘프로모션이 없었어도 왔을 손님’을 빼고 효과를 잽니다. 결과는 <a href="#/recommend">이번 달 추천</a> 계산에 바로 반영됩니다.</p>
+    <p class="help hint">프로모션을 받은 손님과 <b>받지 않은 손님(비교군)</b>을 같은 기간에 비교해, ‘프로모션이 없었어도 왔을 손님’을 빼고 효과를 잽니다. 결과는 <a href="#/recommend">이번 달 추천</a> 계산에 바로 반영됩니다.</p>
     <ul class="design-list">
       <li><b>격주 교차</b> · 첫 방문 유인 — 한 주는 시행, 한 주는 쉬며 주간 신규 손님 수를 비교</li>
       <li><b>비교군(결제 때)</b> · 재방문 혜택 — 처음 온 손님 일부에게는 혜택을 주지 않음(손님 번호로 자동 배정)</li>

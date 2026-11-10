@@ -38,31 +38,6 @@ export function changeRows(changes) {
   return rows.length ? `<ul class="plan-rows">${rows.join('')}</ul>` : '<p class="muted">달라진 점이 없습니다.</p>';
 }
 
-/** 탭: 좌우 화살표로 옮기고, 선택한 패널만 보입니다 */
-export function initTabs(root) {
-  const tabs = [...root.querySelectorAll('[role="tab"]')];
-  const select = (tab, focus = false) => {
-    for (const t of tabs) {
-      const on = t === tab;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
-      root.querySelector(`#${t.getAttribute('aria-controls')}`).hidden = !on;
-    }
-    if (focus) tab.focus();
-  };
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => select(tab));
-    tab.addEventListener('keydown', (e) => {
-      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-      if (step) {
-        e.preventDefault();
-        select(tabs[(i + step + tabs.length) % tabs.length], true);
-      }
-    });
-  });
-  if (tabs.length) select(tabs[0]);
-}
-
 export function fill(id, content) {
   const box = document.getElementById(id);
   if (box) box.innerHTML = content;

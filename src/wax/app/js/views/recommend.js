@@ -37,7 +37,7 @@ function card(e, i, rec) {
     <details class="why">
       <summary>왜 우리 매장에 이 추천인가요?</summary>
       <ul>${e.reasons.map((r) => html`<li>${r}</li>`)}</ul>
-      <p class="help small">효과 확인: ${e.measurement.metric} · 혜택 없는 비교군 ${pct(e.measurement.controlShare)} · 판정까지 ${months(e.measurement.monthsToDecide)}</p>
+      <p class="help hint small">효과 확인: ${e.measurement.metric} · 혜택 없는 비교군 ${pct(e.measurement.controlShare)} · 판정까지 ${months(e.measurement.monthsToDecide)}</p>
     </details>
     ${e.warnings.length ? html`<ul class="warn-list">${e.warnings.map((w) => html`<li>${w}</li>`)}</ul>` : ''}
     </div>
@@ -85,7 +85,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">방문 기록과 매장 진단, 지난달 실행 결과로 어디서 이익이 새는지, 손님이 왜 오지 않는지, 무엇을 얼마나 줄지 다시 계산했습니다.</p>
+    <p class="help hint">방문 기록과 매장 진단, 지난달 실행 결과로 어디서 이익이 새는지, 손님이 왜 오지 않는지, 무엇을 얼마나 줄지 다시 계산했습니다.</p>
     ${rec.configured ? '' : html`<p class="alert caution">매장 진단을 아직 입력하지 않아 기본값으로 계산했습니다. <a href="#/settings">매장 설정 → 매장 진단</a>을 채우면 내 매장에 맞게 바뀝니다.</p>`}
     ${rec.dataReady ? '' : html`<p class="alert caution">방문 기록이 적어 재방문율 등 일부 값은 가정값입니다. 기록이 쌓일수록 정확해집니다.</p>`}
     <div class="kpis">
@@ -98,7 +98,7 @@ export function render(app) {
 
   <section class="panel">
     <h2>이번 달 실행 플랜</h2>
-    <p class="help">월 예산 ${won(store.monthlyPromoBudget)}과 일손·예약 여유 안에서 고른 조합입니다. 금액과 효과는 <b>초기 가정값으로 계산한 추정치</b>이고, 혜택 없는 비교군 결과가 쌓이면 보정됩니다.</p>
+    <p class="help hint">월 예산 ${won(store.monthlyPromoBudget)}과 일손·예약 여유 안에서 고른 조합입니다. 금액과 효과는 <b>초기 가정값으로 계산한 추정치</b>이고, 혜택 없는 비교군 결과가 쌓이면 보정됩니다.</p>
     ${plan.selected.length
       ? html`<div class="rec-cards">${plan.selected.map((e, i) => card(e, i, rec))}</div>
         <p class="rec-total">합계 · 월 비용 ${est(plan.totals.costPerMonth)} · 12개월 기대 순이익 ${est(plan.totals.eip)}</p>`
@@ -107,6 +107,7 @@ export function render(app) {
 
   ${raw(monthlySummaryHtml(plan.changes, esc))}
 
+  <details class="fold" data-panel="rec-basis"><summary><span>추천 근거와 다른 선택지</span></summary><div class="fold-body">
   <div class="two-col">
     <section class="panel">
       <h2>어디서 이익이 새나요</h2>
@@ -133,7 +134,8 @@ export function render(app) {
         : html`<p class="help small">조건에 맞는 장치가 없습니다.</p>`}
     </div>`)}</div>
     ${left.length ? html`<details class="why"><summary>이번 달 플랜에서 빠진 프로모션과 이유 (${left.length})</summary><ul>${left.map((x) => html`<li>${x.reason.includes('—') ? x.reason : `${deviceName(x.id)} — ${x.reason}`}</li>`)}</ul></details>` : ''}
-  </section>`;
+  </section>
+  </div></details>`;
 }
 
 export function bind(root, app) {

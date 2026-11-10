@@ -89,7 +89,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">손님마다 마지막 방문일과 방문 주기(개인 주기 → 시술 기본 주기)로 다음 방문 예정일을 계산합니다. 7일 안이면 ‘임박’, 지나면 ‘지남’, 주기의 두 배가 넘도록 안 오면 ‘휴면’입니다.</p>
+    <p class="help hint">손님마다 마지막 방문일과 방문 주기(개인 주기 → 시술 기본 주기)로 다음 방문 예정일을 계산합니다. 7일 안이면 ‘임박’, 지나면 ‘지남’, 주기의 두 배가 넘도록 안 오면 ‘휴면’입니다.</p>
     <div class="kpis small">
       <div><span>임박</span><b>${count('soon')}명</b></div>
       <div><span>지남</span><b>${count('overdue')}명</b></div>
@@ -124,7 +124,7 @@ export function render(app) {
 
     <section class="panel">
       <h2>재방문 프로모션</h2>
-      <p class="help small">‘추천 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
+      <p class="help hint small">‘추천 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
       <div class="promo-list" role="radiogroup" aria-label="재방문 프로모션">
         ${RETENTION.map((p) => html`
           <label class="promo ${p.id === promotion.id ? 'active' : ''}">
@@ -158,7 +158,7 @@ export function render(app) {
         <button type="button" class="btn btn-primary btn-sm" id="ret-copy">문구 복사</button>
         <button type="button" class="btn btn-line btn-sm" id="ret-copy-list" ${sendable.length ? '' : raw('disabled')}>보낼 손님 목록 복사 (${sendable.length}명)</button>
       </div>
-      <p class="help small">밤 9시부터 다음 날 아침 8시 사이에는 별도로 동의한 손님에게만 보낼 수 있습니다. {별칭}·{시술}·{경과}는 손님별로 바꿔 넣으세요(목록 복사에 함께 들어갑니다).</p>
+      <p class="help hint small">밤 9시부터 다음 날 아침 8시 사이에는 별도로 동의한 손님에게만 보낼 수 있습니다. {별칭}·{시술}·{경과}는 손님별로 바꿔 넣으세요(목록 복사에 함께 들어갑니다).</p>
       ${plans.length ? html`<h3>저장한 재방문 프로모션</h3><ul class="plan-list">${plans.map((p) => html`<li><span><b>${p.name}</b></span><button type="button" class="btn btn-ghost btn-sm" data-delete-plan="${p.id}" aria-label="${p.name} 삭제">삭제</button></li>`)}</ul>` : ''}
     </section>
   </div>`;

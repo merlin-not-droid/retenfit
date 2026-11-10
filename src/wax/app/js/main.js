@@ -17,7 +17,36 @@ import * as retention from './views/retention.js';
 import * as settingsView from './views/settings.js';
 
 const ROUTES = { recommend: recommendView, acquisition, retention, analytics: analyticsView, experiments: experimentsView, customers, settings: settingsView };
+// 사이드바 메뉴 5개. 각 메뉴 안의 화면은 위쪽 탭으로 나눕니다. 화면 주소(#/경로)는 그대로입니다
+const GROUPS = [
+  { key: 'recommend', label: '이번 달 추천', routes: ['recommend'] },
+  { key: 'customers', label: '고객', routes: ['customers', 'retention'] },
+  { key: 'promo', label: '프로모션', routes: ['acquisition', 'experiments'] },
+  { key: 'analytics', label: '매출·성과', routes: ['analytics'] },
+  { key: 'settings', label: '설정', routes: ['settings'] },
+];
 const DEFAULT_ROUTE = 'recommend';
+
+/** 설명 보기: 안내 문단을 숨기거나 보여 줍니다. 선택은 이 브라우저에 기억합니다 */
+const HELP_KEY = 'retenfit:help';
+function helpOn() {
+  try {
+    return localStorage.getItem(HELP_KEY) === 'on';
+  } catch {
+    return false;
+  }
+}
+function setHelp(on) {
+  document.documentElement.dataset.help = on ? 'on' : 'off';
+  document.getElementById('help-toggle')?.setAttribute('aria-pressed', String(on));
+  try {
+    localStorage.setItem(HELP_KEY, on ? 'on' : 'off');
+  } catch {
+    /* 저장하지 못해도 이번 화면에서는 동작합니다 */
+  }
+}
+setHelp(helpOn());
+document.getElementById('help-toggle')?.addEventListener('click', () => setHelp(!helpOn()));
 const MIN_COMPLETED = 20; // 실제 재방문율을 쓰려면 관찰 완료 손님이 이만큼은 있어야 함
 
 const demo = isDemo(); // 샘플 매장 미리보기: 구독 확인 없이 열고 아무것도 저장하지 않음
@@ -152,12 +181,18 @@ function render() {
   const focus = sameRoute ? focusKey(document.activeElement) : null;
   const scroll = window.scrollY;
 
+  const group = GROUPS.find((g) => g.routes.includes(key));
   document.querySelectorAll('.dash-nav a').forEach((a) => {
-    if (a.dataset.route === key) a.setAttribute('aria-current', 'page');
+    if (a.dataset.group === group.key) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
+  const subTabs = document.getElementById('sub-tabs');
+  subTabs.hidden = group.routes.length < 2;
+  subTabs.setAttribute('aria-label', `${group.label} 메뉴 안의 화면`);
+  subTabs.innerHTML = group.routes.length < 2 ? '' : String(html`${group.routes.map((r) => html`<a href="#/${r}" data-route="${r}" aria-current="${r === key ? 'page' : 'false'}">${ROUTES[r].title}</a>`)}`);
+  const openPanels = sameRoute ? [...document.querySelectorAll('#view details[data-panel][open]')].map((el) => el.dataset.panel) : [];
   document.getElementById('shop-name').textContent = app.state.settings.shopName || '내 매장';
-  document.getElementById('page-title').textContent = view.title;
+  document.getElementById('page-title').textContent = group.label;
   const dataState = document.getElementById('data-state');
   dataState.textContent = demo ? '샘플 매장 미리보기' : app.state.meta.demo ? '샘플 데이터' : '내 매장 데이터';
   dataState.classList.toggle('real', !demo && !app.state.meta.demo);
@@ -166,6 +201,7 @@ function render() {
   const root = document.getElementById('view');
   root.innerHTML = String(view.render(app));
   view.bind?.(root, app);
+  for (const id of openPanels) root.querySelector(`details[data-panel="${id}"]`)?.setAttribute('open', '');
 
   document.querySelectorAll('[data-action="load-sample"]').forEach((b) => b.addEventListener('click', loadSample));
   document.querySelectorAll('[data-action="start-own"]').forEach((b) =>

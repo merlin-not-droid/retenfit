@@ -79,11 +79,16 @@ const accept = async (p = page) => {
   await p.click('.confirm-ok');
 };
 const goWaxTab = async (route, title) => {
-  await page.click(`.dash-nav a[data-route="${route}"]`);
+  // 묶은 메뉴: 사이드바에 없으면 메뉴 안의 탭에 있습니다. 옛 주소(#/경로)는 그대로 열립니다
+  const tabLink = page.locator(`.sub-tabs a[data-route="${route}"]`);
+  if (await tabLink.count()) await tabLink.click();
+  else await page.evaluate((r) => { location.hash = `#/${r}`; }, route);
   await page.waitForSelector(`#view h1:text-is("${title}")`);
 };
 const goSalonTab = async (route, title) => {
-  await page.click(`.dash-nav a[data-tab="${route}"]`);
+  const link = page.locator(`.sub-tabs a[data-tab="${route}"], .dash-nav a[data-tab="${route}"]`).first();
+  if (await link.count()) await link.click();
+  else await page.evaluate((r) => { location.hash = `#/${r}`; }, route);
   await page.waitForFunction((t) => document.title.startsWith(t), title);
 };
 

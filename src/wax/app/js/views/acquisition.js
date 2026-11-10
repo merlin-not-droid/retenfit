@@ -85,7 +85,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">처음 오는 손님을 위한 프로모션을 고르고 할인율을 정하세요. 남는 이익과, 할인한 금액이 재방문으로 얼마나 회수되는지 바로 계산합니다.</p>
+    <p class="help hint">처음 오는 손님을 위한 프로모션을 고르고 할인율을 정하세요. 남는 이익과, 할인한 금액이 재방문으로 얼마나 회수되는지 바로 계산합니다.</p>
     <div class="controls">
       ${genderSeg('acq-gender', ui.gender)}
       <label class="field">시술
@@ -98,7 +98,7 @@ export function render(app) {
   <div class="two-col">
     <section class="panel">
       <h2>프로모션 고르기</h2>
-      <p class="help small">‘추천 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
+      <p class="help hint small">‘추천 순위’는 내 매장의 진단·방문 기록으로 매긴 순서입니다. <a href="#/recommend">이유 보기</a></p>
       <div class="promo-list" role="radiogroup" aria-label="첫 방문 프로모션">
         ${ACQUISITION.map((p) => html`
           <label class="promo ${p.id === promotion.id ? 'active' : ''}">
@@ -148,7 +148,7 @@ export function render(app) {
     <h2>저장한 첫 방문 프로모션</h2>
     ${plans.length
       ? html`<ul class="plan-list">${plans.map((p) => html`<li><span><b>${p.name}</b> · ${GENDER_LABEL[p.gender] ?? ''} ${p.service} · 할인 ${pct(p.rate)}</span><button type="button" class="btn btn-ghost btn-sm" data-delete-plan="${p.id}" aria-label="${p.name} 삭제">삭제</button></li>`)}</ul>
-        <p class="help">저장한 이름은 방문 기록의 ‘프로모션’ 칸에서 고를 수 있고, 성과 분석에서 이 이름별로 재방문율을 비교합니다.</p>`
+        <p class="help hint">저장한 이름은 방문 기록의 ‘프로모션’ 칸에서 고를 수 있고, 성과 분석에서 이 이름별로 재방문율을 비교합니다.</p>`
       : html`<p class="help">아직 없습니다. 할인율을 정한 뒤 저장하면 방문 기록과 성과 분석에서 이 이름으로 구분됩니다.</p>`}
   </section>`;
 }

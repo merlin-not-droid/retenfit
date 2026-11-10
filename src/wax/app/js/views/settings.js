@@ -13,7 +13,7 @@ function shopPanel(settings) {
   return html`
   <section class="panel" id="shop-diagnosis">
     <h2>매장 진단 <span class="badge">이번 달 추천에 사용</span></h2>
-    <p class="help">방문 기록에는 없는 매장 정보입니다. 상권·가격대·예약 여유에 따라 추천 프로모션과 할인 수준이 달라집니다. 정확하지 않아도 괜찮으니 대략 입력하세요.</p>
+    <p class="help hint">방문 기록에는 없는 매장 정보입니다. 상권·가격대·예약 여유에 따라 추천 프로모션과 할인 수준이 달라집니다. 정확하지 않아도 괜찮으니 대략 입력하세요.</p>
     ${s.configured ? '' : html`<p class="alert caution">아직 입력하지 않아 기본값으로 추천하고 있습니다.</p>`}
     <form id="st-shop" class="form-grid">
       <label class="field">상권 <select name="tradeArea">${options(TRADE_AREA_LABEL, s.tradeArea)}</select></label>
@@ -47,7 +47,7 @@ export function render(app) {
   return html`
   <section class="panel intro">
     <h1>${title}</h1>
-    <p class="help">여기 숫자로 할인 경고·추천 할인율·공헌이익·다음 방문일을 계산합니다.</p>
+    <p class="help hint">여기 숫자로 할인 경고·추천 할인율·공헌이익·다음 방문일을 계산합니다.</p>
     <form id="st-basic" class="form-grid">
       <label class="field">매장 이름 <input name="shopName" value="${settings.shopName}" maxlength="30" placeholder="안내 문구 맨 앞에 들어갑니다"></label>
       <label class="field">매장 연락처 <input name="shopContact" value="${settings.shopContact}" maxlength="30" inputmode="tel" placeholder="예약 문의·수신 거부용"></label>
@@ -72,7 +72,7 @@ export function render(app) {
   <section class="panel">
     <h2>시술 메뉴</h2>
     ${settings.menuIsExample ? html`<p class="alert caution">지금 값은 <b>예시</b>입니다. 매장 가격과 변동비로 바꿔 저장하면 이 표시가 사라집니다.</p>` : ''}
-    <p class="help">변동비는 1회 시술에 드는 재료비와 인건비(시간 × 시급 등) 추정치입니다. 방문 주기는 다음 방문 예정일 계산에 쓰는 기본값이며, 손님마다 따로 정할 수도 있습니다.</p>
+    <p class="help hint">변동비는 1회 시술에 드는 재료비와 인건비(시간 × 시급 등) 추정치입니다. 방문 주기는 다음 방문 예정일 계산에 쓰는 기본값이며, 손님마다 따로 정할 수도 있습니다.</p>
     <form id="st-menu">
       <div class="table-wrap"><table class="menu-table">
         <thead><tr><th scope="col">시술</th><th scope="col">성별</th><th scope="col">정가(원)</th><th scope="col">변동비(원)</th><th scope="col">기본 주기(일)</th><th scope="col"><span class="sr-only">삭제</span></th></tr></thead>
@@ -102,7 +102,7 @@ export function render(app) {
       <button type="button" class="btn btn-line btn-sm" data-action="load-sample">샘플 데이터 불러오기</button>
       <button type="button" class="btn btn-ghost btn-sm danger" id="st-clear">모든 데이터 지우기</button>
     </div>
-    <p class="help small">브라우저 데이터를 지우거나 기기를 바꾸면 기록이 사라집니다. 백업 파일을 정기적으로 내려받아 안전한 곳에 보관하세요. 백업 파일에는 손님 정보가 들어 있으니 공유하지 마세요.</p>
+    <p class="help hint small">브라우저 데이터를 지우거나 기기를 바꾸면 기록이 사라집니다. 백업 파일을 정기적으로 내려받아 안전한 곳에 보관하세요. 백업 파일에는 손님 정보가 들어 있으니 공유하지 마세요.</p>
   </section>`;
 }
 

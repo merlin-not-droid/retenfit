@@ -454,3 +454,8 @@ body { font-size: var(--fs-body); }
   .form-grid.three, .form-grid.two { grid-template-columns: minmax(0, 1fr); }
   .sf-math-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* 재방문 현황: 접어 둔 단계 */
+.sf-asof { margin-left: var(--s2); color: var(--text-2); font-size: var(--fs-small); font-weight: 500; }
+.sf-step { margin-bottom: var(--s4); }
+.sf-step[open] { border-color: var(--line-strong); }

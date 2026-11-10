@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>리텐핏 왁싱샵 대시보드</title>
-  <meta name="description" content="왁싱샵 사장님을 위한 리텐핏 대시보드입니다. 이번 달 추천, 첫 방문 유인, 재방문 설계, 성과와 매출, 고객 데이터를 봅니다.">
+  <meta name="description" content="왁싱샵 사장님을 위한 리텐핏 대시보드입니다. 이번 달 추천, 고객, 프로모션, 매출·성과를 봅니다.">
   <!-- 손님 기록을 다루는 앱 화면이라 검색 결과에는 내보내지 않습니다 (sitemap에서도 자동 제외) -->
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#efe5da">
@@ -24,18 +24,17 @@
       </a>
       <div class="dash-shop" id="shop-name">내 매장</div>
       <nav class="dash-nav" aria-label="주 메뉴">
-        <a href="#/recommend" data-route="recommend">이번 달 추천</a>
-        <a href="#/acquisition" data-route="acquisition">첫 방문 유인</a>
-        <a href="#/retention" data-route="retention">재방문 설계</a>
-        <a href="#/analytics" data-route="analytics">성과·매출 분석</a>
-        <a href="#/experiments" data-route="experiments">효과 실험</a>
-        <a href="#/customers" data-route="customers">고객 목록</a>
-        <a href="#/settings" data-route="settings">매장 설정</a>
+        <a href="#/recommend" data-group="recommend">이번 달 추천</a>
+        <a href="#/customers" data-group="customers">고객</a>
+        <a href="#/acquisition" data-group="promo">프로모션</a>
+        <a href="#/analytics" data-group="analytics">매출·성과</a>
+        <a href="#/settings" data-group="settings">설정</a>
       </nav>
       <div class="dash-side-foot"><a href="#/settings">백업 내려받기</a></div>
     </aside>
     <div class="dash-body">
-      <header class="dash-top"><strong id="page-title">이번 달 추천</strong><span class="data-state" id="data-state">샘플 데이터</span></header>
+      <header class="dash-top"><strong id="page-title">이번 달 추천</strong><span class="dash-top-end"><button type="button" class="help-toggle" id="help-toggle" aria-pressed="false">설명 보기</button><span class="data-state" id="data-state">샘플 데이터</span></span></header>
+      <nav class="sub-tabs" id="sub-tabs" aria-label="이 메뉴 안의 화면" hidden></nav>
       <div id="banner" class="banner-area"></div>
       <main id="view" class="dash-main" tabindex="-1">
         <noscript><p class="banner bad">이 화면은 자바스크립트를 켜야 쓸 수 있습니다.</p></noscript>
